@@ -6,7 +6,6 @@
 class ofApp : public ofBaseApp{
 
     ofxBeat beat;
-    void audioReceived(float*, int, int);
     
 	public:
         bool isShaderDirty;
@@ -23,5 +22,6 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-		
+    
+        void audioReceived(float*, int, int);
 };
