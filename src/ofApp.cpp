@@ -3,11 +3,12 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     isShaderDirty = true;
+    ofSoundStreamSetup(0, 1, this, 44100, beat.getBufferSize(), 4);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
+    beat.update(ofGetElapsedTimeMillis());
 }
 
 //--------------------------------------------------------------
@@ -67,4 +68,9 @@ void ofApp::gotMessage(ofMessage msg){
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
 
+}
+
+//--------------------------------------------------------------
+void ofApp::audioReceived(float* input, int bufferSize, int nChannels) {
+    beat.audioReceived(input, bufferSize, nChannels);
 }

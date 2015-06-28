@@ -1,9 +1,13 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxBeat.h"
 
 class ofApp : public ofBaseApp{
 
+    ofxBeat beat;
+    void audioReceived(float*, int, int);
+    
 	public:
         bool isShaderDirty;
 		void setup();
