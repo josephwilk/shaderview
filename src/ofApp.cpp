@@ -30,6 +30,7 @@ void ofApp::update(){
 void ofApp::draw(){
     ofSetColor(255);
     shader.begin();
+    shader.setUniform1f("iGlobalTime", ofGetElapsedTimef());
     ofRect(0, 0, ofGetWidth(), ofGetHeight());
     shader.end();
 }

@@ -1,6 +1,8 @@
 // fragment shader
  
 #version 150
+
+uniform float iGlobalTime;
  
 out vec4 outputColor;
  
@@ -16,7 +18,7 @@ void main()
  
     float r = gl_FragCoord.x / windowWidth;
     float g = gl_FragCoord.y / windowHeight;
-    float b = 0.1;
+    float b = sin(iGlobalTime);
     float a = 1.0;
     outputColor = vec4(r, g, b, a);
 }
