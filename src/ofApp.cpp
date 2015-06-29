@@ -44,7 +44,7 @@ void ofApp::keyReleased(int key){
 		case ' ':
 			isShaderDirty = true;
 			break;
-		case 'f':
+		case OF_KEY_F11:
 			ofToggleFullscreen();
 			break;
 		default:
