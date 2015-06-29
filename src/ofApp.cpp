@@ -22,6 +22,7 @@ void ofApp::update(){
     beat.update(ofGetElapsedTimeMillis());
     if(isShaderDirty){
         shader.load(ofToDataPath("shader", true));
+        isShaderDirty = false;
     }
 }
 
