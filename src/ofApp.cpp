@@ -12,22 +12,17 @@ void ofApp::setup(){
     ofBuffer dataBuffer;
     dataBuffer = ofBufferFromFile(ofToDataPath("wave.glsl"), false);
    
-    std::string shaderTemplate = "#version 150\nuniform vec3 iResolution;\nuniform float iGlobalTime;\nuniform float iChannelTime[4];\nuniform vec3 iChannelResolution[4];\nuniform vec4 iMouse;\n"
+    string shaderTemplate = "#version 150\nuniform vec3 iResolution;\nuniform float iGlobalTime;\nuniform float iChannelTime[4];\nuniform vec3 iChannelResolution[4];\nuniform vec4 iMouse;\n";
     
-#ifdef TARGET_OPENGLES
-    shader.load("shadersES2/shader");
-#else
-    if(ofIsGLProgrammableRenderer()){
-        shader.load("shadersGL3/shader");
-    }else{
-        shader.load("shadersGL2/shader");
-    }
-#endif
+    shader.load(ofToDataPath("shader", true));
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     beat.update(ofGetElapsedTimeMillis());
+    if(isShaderDirty){
+        shader.load(ofToDataPath("shader", true));
+    }
 }
 
 //--------------------------------------------------------------
