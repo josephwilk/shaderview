@@ -2,10 +2,15 @@
 
 #include "ofMain.h"
 #include "ofxBeat.h"
+#include "ofxIO.h"
 
 class ofApp : public ofBaseApp{
 
     ofxBeat beat;
+    ofx::IO::DirectoryWatcherManager watcher;
+    ofx::IO::HiddenFileFilter fileFilter;
+    std::deque<std::string> messages;
+    ofShader shader;
     
 	public:
         bool isShaderDirty;
@@ -24,4 +29,26 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     
         void audioReceived(float*, int, int);
+    
+        void onDirectoryWatcherItemModified(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt);
+    
+    void onDirectoryWatcherItemAdded(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt){
+        ofLogNotice("Added:    " + evt.item.path());
+    }
+    
+    void onDirectoryWatcherItemRemoved(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt){
+        ofLogNotice("Removed:  " + evt.item.path());
+    }
+    
+    void onDirectoryWatcherItemMovedFrom(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt){
+        ofLogNotice("ofApp::onDirectoryWatcherItemMovedFrom") << "Moved From: " << evt.item.path();
+    }
+    
+    void onDirectoryWatcherItemMovedTo(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt){
+        ofLogNotice("ofApp::onDirectoryWatcherItemMovedTo") << "Moved To: " << evt.item.path();
+    }
+    
+    void onDirectoryWatcherError(const Poco::Exception& exc){
+        ofLogError("ofApp::onDirectoryWatcherError") << "Error: " << exc.displayText();
+    }
 };

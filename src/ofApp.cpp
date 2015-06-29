@@ -4,6 +4,23 @@
 void ofApp::setup(){
     isShaderDirty = true;
     ofSoundStreamSetup(0, 1, this, 44100, beat.getBufferSize(), 4);
+    watcher.registerAllEvents(this);
+    std::string folderToWatch = ofToDataPath("", true);
+    bool listExistingItemsOnStart = true;
+    watcher.addPath(folderToWatch, listExistingItemsOnStart, &fileFilter);
+    
+    ofBuffer dataBuffer;
+    dataBuffer = ofBufferFromFile(ofToDataPath("wave.glsl"), false);
+    
+#ifdef TARGET_OPENGLES
+    shader.load("shadersES2/shader");
+#else
+    if(ofIsGLProgrammableRenderer()){
+        shader.load("shadersGL3/shader");
+    }else{
+        shader.load("shadersGL2/shader");
+    }
+#endif
 }
 
 //--------------------------------------------------------------
@@ -13,7 +30,10 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-
+    ofSetColor(255);
+    shader.begin();
+    ofRect(0, 0, ofGetWidth(), ofGetHeight());
+    shader.end();
 }
 
 //--------------------------------------------------------------
@@ -73,4 +93,10 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 //--------------------------------------------------------------
 void ofApp::audioReceived(float* input, int bufferSize, int nChannels) {
     beat.audioReceived(input, bufferSize, nChannels);
+}
+
+//--------------------------------------------------------------
+void ofApp::onDirectoryWatcherItemModified(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt){
+    isShaderDirty = true;
+    ofLogNotice("Modified: " + evt.item.path());
 }
