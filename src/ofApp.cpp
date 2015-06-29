@@ -11,6 +11,8 @@ void ofApp::setup(){
     
     ofBuffer dataBuffer;
     dataBuffer = ofBufferFromFile(ofToDataPath("wave.glsl"), false);
+   
+    std::string shaderTemplate = "#version 120\nuniform vec3 iResolution;\nuniform float iGlobalTime;\nuniform float iChannelTime[4];\nuniform vec3 iChannelResolution[4];\nuniform vec4 iMouse;\n"
     
 #ifdef TARGET_OPENGLES
     shader.load("shadersES2/shader");
