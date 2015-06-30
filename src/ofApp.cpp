@@ -2,8 +2,8 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-//    bufferSize = 2048;
-//    ofSoundStreamSetup(0, 1, this, 44100, bufferSize, 4);
+    bufferSize = 2048;
+    ofSoundStreamSetup(0, 1, this, 44100, bufferSize, 4);
     
     ofDisableArbTex();
     mTexture.allocate(512,2,GL_LUMINANCE, false);
@@ -22,9 +22,9 @@ void ofApp::setup(){
    
     string shaderTemplate = "#version 150\nuniform vec3 iResolution;\nuniform float iGlobalTime;\nuniform float iChannelTime[4];\nuniform vec3 iChannelResolution[4];\nuniform vec4 iMouse;\n";
 
-    fft.setup(16384);
-    
     shader.load(ofToDataPath("default.vert", true), ofToDataPath("wave.glsl", true));
+   
+    fft.setup(16384);
 }
 
 //--------------------------------------------------------------
@@ -35,6 +35,11 @@ void ofApp::update(){
     unsigned char signal[1024];
     for(int i=0; i < 512; i++){
         float audioSig = fft.getAudio()[i];
+        signal[i] = (unsigned char) (buffer.at(i)*255); // FFT
+    }
+    for (int i = 0; i < 512; i++) {
+        float audioSig = fft.getAudio()[i];
+        audioSig = (audioSig * 0.5 + 0.5) * 254;
         signal[512+i] = (unsigned char) audioSig;
     }
     mTexture.loadData(signal, 512, 2, GL_LUMINANCE);
@@ -62,8 +67,8 @@ void ofApp::draw(){
     glEnd();
 
     ofRect(0, 0, ofGetWidth(), ofGetHeight());
-    mTexture.unbind();
     shader.end();
+    mTexture.unbind();
 }
 
 //--------------------------------------------------------------
