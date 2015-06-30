@@ -8,6 +8,8 @@ void ofApp::setup(){
     ofDisableArbTex();
     mTexture.allocate(512,2,GL_LUMINANCE, false);
    
+    w = ofGetWidth();
+    h = ofGetHeight();
     
     isShaderDirty = true;
     watcher.registerAllEvents(this);
@@ -50,8 +52,17 @@ void ofApp::draw(){
     shader.begin();
     shader.setUniform1f("iGlobalTime", ofGetElapsedTimef());
     shader.setUniform3f("iResolution", ofGetWidth() , ofGetHeight(), 1 ) ;  
-    shader.setUniformTexture("iChannel0", mTexture, 0);  
+    shader.setUniformTexture("iChannel0", mTexture, 0);
+    
+    glBegin(GL_QUADS);
+    glTexCoord2f(0,0); glVertex3f(0,0,0);
+    glTexCoord2f(1,0); glVertex3f(w,0,0);
+    glTexCoord2f(1,1); glVertex3f(w,h,0);
+    glTexCoord2f(0,1); glVertex3f(0,h,0);
+    glEnd();
+
     ofRect(0, 0, ofGetWidth(), ofGetHeight());
+    mTexture.unbind();
     shader.end();
 }
 

@@ -12,7 +12,8 @@ class ofApp : public ofBaseApp{
     ofShader shader;
     ofTexture mTexture;
     ofxEasyFft fft;
-    int plotHeight, bufferSize;
+    int plotHeight, bufferSize, w,h;
+    
     
 public:
     bool isShaderDirty;
