@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxBeat.h"
 #include "ofxIO.h"
+#include "ofxFft"
 
 class ofApp : public ofBaseApp{
 

@@ -5,3 +5,4 @@ ofxEditor
 ofxIO
 ofxPostProcessing
 ofxGui
+ofxFft

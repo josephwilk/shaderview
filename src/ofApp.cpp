@@ -2,6 +2,9 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    ofDisableArbTex();
+    mTexture.allocate(512,2,GL_LUMINANCE, false);
+    
     isShaderDirty = true;
     ofSoundStreamSetup(0, 1, this, 44100, beat.getBufferSize(), 4);
     watcher.registerAllEvents(this);
@@ -19,6 +22,16 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    fft.update();
+    
+    vector<float>& buffer = fft.getBins();
+    unsigned char signal[1024];
+    for(int i=0; i < 512; i++){
+        float audioSig = fft.getAudio()[i];
+        signal[512+i] = (unsigned char) audioSig;
+    }
+    mTexture.loadData(signal, 512, 2, GL_LUMINANCE);
+    
     beat.update(ofGetElapsedTimeMillis());
     if(isShaderDirty){
         shader.load(ofToDataPath("shader", true));
