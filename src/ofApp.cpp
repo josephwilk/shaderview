@@ -19,7 +19,7 @@ void ofApp::setup(){
 
     fft.setup(16384);  
     
-    shader.load(ofToDataPath("shader", true));
+    shader.load(ofToDataPath("default.vert", true), ofToDataPath("shader.frag", true));
 }
 
 //--------------------------------------------------------------
