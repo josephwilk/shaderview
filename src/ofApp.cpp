@@ -46,6 +46,8 @@ void ofApp::draw(){
     ofSetColor(255);
     shader.begin();
     shader.setUniform1f("iGlobalTime", ofGetElapsedTimef());
+    shader.setUniform3f("iResolution", ofGetWidth() , ofGetHeight(), 1 ) ;  
+    shader.setUniformTexture("iChannel0", mTexture, 0);  
     ofRect(0, 0, ofGetWidth(), ofGetHeight());
     shader.end();
 }
