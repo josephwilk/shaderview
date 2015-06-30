@@ -2,11 +2,14 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+//    bufferSize = 2048;
+//    ofSoundStreamSetup(0, 1, this, 44100, bufferSize, 4);
+    
     ofDisableArbTex();
     mTexture.allocate(512,2,GL_LUMINANCE, false);
+   
     
     isShaderDirty = true;
-    ofSoundStreamSetup(0, 1, this, 44100, beat.getBufferSize(), 4);
     watcher.registerAllEvents(this);
     std::string folderToWatch = ofToDataPath("", true);
     bool listExistingItemsOnStart = true;
@@ -17,9 +20,9 @@ void ofApp::setup(){
    
     string shaderTemplate = "#version 150\nuniform vec3 iResolution;\nuniform float iGlobalTime;\nuniform float iChannelTime[4];\nuniform vec3 iChannelResolution[4];\nuniform vec4 iMouse;\n";
 
-    fft.setup(16384);  
+    fft.setup(16384);
     
-    shader.load(ofToDataPath("default.vert", true), ofToDataPath("shader.frag", true));
+    shader.load(ofToDataPath("default.vert", true), ofToDataPath("wave.glsl", true));
 }
 
 //--------------------------------------------------------------
@@ -34,9 +37,9 @@ void ofApp::update(){
     }
     mTexture.loadData(signal, 512, 2, GL_LUMINANCE);
     
-    beat.update(ofGetElapsedTimeMillis());
+    //beat.update(ofGetElapsedTimeMillis());
     if(isShaderDirty){
-        shader.load(ofToDataPath("default.vert", true), ofToDataPath("shader.frag", true));
+        shader.load(ofToDataPath("default.vert", true), ofToDataPath("wave.glsl", true));
         isShaderDirty = false;
     }
 }
@@ -108,7 +111,7 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 
 //--------------------------------------------------------------
 void ofApp::audioReceived(float* input, int bufferSize, int nChannels) {
-    beat.audioReceived(input, bufferSize, nChannels);
+    //beat.audioReceived(input, bufferSize, nChannels);
 }
 
 //--------------------------------------------------------------

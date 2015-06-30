@@ -1,18 +1,24 @@
-float smoothbump(float center, float width, float x) {
-  float w2 = width/2.0;
-  float cp = center+w2;
-  float cm = center-w2;
-  float c = smoothstep(cm, center, x) * (1.0-smoothstep(center, cp, x));
-  return c;
-}
+#version 120
 
-void main(void)
-{
-    vec2  uv     = gl_FragCoord.xy/iResolution.xy;
-    uv.y         = 1.0 - uv.y; // +Y is now "up"
-    float freq   = 0.25*texture2D(iChannel0,vec2(uv.x,0.25)).x;
-    float wave   = texture2D(iChannel0,vec2(uv.x,0.75)).x;
-    float freqc  = smoothstep(0.0,(1.0/iResolution.y), freq + uv.y - 0.9);
-    float wavec  = smoothbump(0.0,(4.0/iResolution.y), wave + uv.y - 0.5);
-    gl_FragColor = vec4(freqc, wavec, 0.25,1.0);
-}
+uniform vec3      iResolution;           // viewport resolution (in pixels)  
+uniform float     iGlobalTime;           // shader playback time (in seconds)  
+uniform sampler2D iChannel0;          // input channel. XX = 2D/Cube  
+
+#define PI  3.14159  
+#define EPS .001  
+
+#define T .03  // Thickness  
+#define W 2.   // Width  
+#define A .09  // Amplitude  
+#define V 1.   // Velocity  
+
+void main(void)  
+{  
+	vec2 c = gl_FragCoord.xy / iResolution.xy;  
+	vec4 s = texture2D(iChannel0, c * .5);  
+	c = vec2(0., A*s.y*sin((c.x*W+iGlobalTime*V)* 2.5)) + (c*2.-1.);  
+	float g = max(abs(s.y/(pow(c.y, 2.1*sin(s.x*PI))))*T,  
+				  abs(.1/(c.y+EPS)));  
+	gl_FragColor = vec4(g*g*s.y*.6, g*s.w*.44, g*g*.7, 1.);  
+}  
+

@@ -1,37 +1,38 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxBeat.h"
 #include "ofxIO.h"
-#include "ofxFft"
+#include "ofxFft.h"
+#include "ofxEasyFft.h"
 
 class ofApp : public ofBaseApp{
-
-    ofxBeat beat;
+    
     ofx::IO::DirectoryWatcherManager watcher;
     ofx::IO::HiddenFileFilter fileFilter;
     ofShader shader;
     ofTexture mTexture;
+    ofxEasyFft fft;
+    int plotHeight, bufferSize;
     
-	public:
-                bool isShaderDirty;
-		void setup();
-		void update();
-		void draw();
-
-		void keyPressed(int key);
-		void keyReleased(int key);
-		void mouseMoved(int x, int y );
-		void mouseDragged(int x, int y, int button);
-		void mousePressed(int x, int y, int button);
-		void mouseReleased(int x, int y, int button);
-		void windowResized(int w, int h);
-		void dragEvent(ofDragInfo dragInfo);
-		void gotMessage(ofMessage msg);
+public:
+    bool isShaderDirty;
+    void setup();
+    void update();
+    void draw();
     
-        void audioReceived(float*, int, int);
+    void keyPressed(int key);
+    void keyReleased(int key);
+    void mouseMoved(int x, int y );
+    void mouseDragged(int x, int y, int button);
+    void mousePressed(int x, int y, int button);
+    void mouseReleased(int x, int y, int button);
+    void windowResized(int w, int h);
+    void dragEvent(ofDragInfo dragInfo);
+    void gotMessage(ofMessage msg);
     
-        void onDirectoryWatcherItemModified(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt);
+    void audioReceived(float*, int, int);
+    
+    void onDirectoryWatcherItemModified(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt);
     
     void onDirectoryWatcherItemAdded(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt){
         ofLogNotice("Added:    " + evt.item.path());
