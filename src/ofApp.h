@@ -10,7 +10,6 @@ class ofApp : public ofBaseApp{
     ofxBeat beat;
     ofx::IO::DirectoryWatcherManager watcher;
     ofx::IO::HiddenFileFilter fileFilter;
-    std::deque<std::string> messages;
     ofShader shader;
     ofTexture mTexture;
     
