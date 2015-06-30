@@ -13,6 +13,7 @@ class ofApp : public ofBaseApp{
     ofTexture mTexture;
     ofxEasyFft fft;
     int plotHeight, bufferSize, w,h;
+    ofFbo fbo;
     
     
 public:
@@ -20,6 +21,8 @@ public:
     void setup();
     void update();
     void draw();
+    
+    void plot(vector<float>& buffer, float scale);
     
     void keyPressed(int key);
     void keyReleased(int key);
@@ -31,7 +34,7 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    void audioReceived(float*, int, int);
+    //void audioReceived(float*, int, int);
     
     void onDirectoryWatcherItemModified(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt);
     
