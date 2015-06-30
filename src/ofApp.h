@@ -12,6 +12,7 @@ class ofApp : public ofBaseApp{
     ofx::IO::HiddenFileFilter fileFilter;
     std::deque<std::string> messages;
     ofShader shader;
+    ofTexture mTexture;
     
 	public:
         bool isShaderDirty;
