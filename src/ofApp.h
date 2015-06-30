@@ -15,7 +15,7 @@ class ofApp : public ofBaseApp{
     ofTexture mTexture;
     
 	public:
-        bool isShaderDirty;
+                bool isShaderDirty;
 		void setup();
 		void update();
 		void draw();
