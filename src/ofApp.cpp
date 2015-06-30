@@ -16,6 +16,8 @@ void ofApp::setup(){
     dataBuffer = ofBufferFromFile(ofToDataPath("wave.glsl"), false);
    
     string shaderTemplate = "#version 150\nuniform vec3 iResolution;\nuniform float iGlobalTime;\nuniform float iChannelTime[4];\nuniform vec3 iChannelResolution[4];\nuniform vec4 iMouse;\n";
+
+    fft.setup(16384);  
     
     shader.load(ofToDataPath("shader", true));
 }
