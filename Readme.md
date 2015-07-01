@@ -4,6 +4,7 @@
 ### OpenFramework Plugins
 
 * https://github.com/kylemcdonald/ofxFft
+* https://github.com/bakercp/ofxIO
 
 ##License
 
