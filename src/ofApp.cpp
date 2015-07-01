@@ -2,8 +2,9 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    //bufferSize = 2048;
-    //ofSoundStreamSetup(0, 1, this, 44100, bufferSize, 4);
+    defaultVert = "default.vert";
+    mainFrag    = "wave.glsl";
+    currentAmp = 0.0;
     
     ofSetVerticalSync(true);
     ofSetFrameRate(60);
@@ -11,37 +12,30 @@ void ofApp::setup(){
     ofDisableArbTex();
     mTexture.allocate(512,2,GL_LUMINANCE, false);
    
+    w = ofGetWidth();
+    h = ofGetHeight();
+    
     fbo.allocate(ofGetWidth(),ofGetHeight(), GL_RGB);
     fbo.begin();
     ofClear(0,0,0,0);
     fbo.end();
-    
-    w = ofGetWidth();
-    h = ofGetHeight();
-    
+
     isShaderDirty = true;
     watcher.registerAllEvents(this);
     std::string folderToWatch = ofToDataPath("", true);
     bool listExistingItemsOnStart = true;
     watcher.addPath(folderToWatch, listExistingItemsOnStart, &fileFilter);
     
-    ofBuffer dataBuffer;
-    dataBuffer = ofBufferFromFile(ofToDataPath("wave.glsl"), false);
-   
-    string shaderTemplate = "#version 150\nuniform vec3 iResolution;\nuniform float iGlobalTime;\nuniform float iChannelTime[4];\nuniform vec3 iChannelResolution[4];\nuniform vec4 iMouse;\n";
-
-    shader.load(ofToDataPath("default.vert", true), ofToDataPath("wave.glsl", true));
-   
-//    ofSoundStreamSetup(0, 1, this, 44100, bufferSize, 4);
-
+    shader.load(ofToDataPath(defaultVert, true), ofToDataPath(mainFrag, true));
     
     fft.setup(16384);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    //FFT
     fft.update();
+    
+    currentAmp = *(fft.fft->getAmplitude());
     
     vector<float>& buffer = fft.getBins();
     
@@ -55,20 +49,18 @@ void ofApp::update(){
         signal[512+i] = (unsigned char) audioSig;
     }
     mTexture.loadData(signal, 512, 2, GL_LUMINANCE);
-    
     //beat.update(ofGetElapsedTimeMillis());
+
     if(isShaderDirty){
-        shader.load(ofToDataPath("default.vert", true), ofToDataPath("wave.glsl", true));
+        shader.load(ofToDataPath(defaultVert, true), ofToDataPath(mainFrag, true));
         isShaderDirty = false;
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    fft.update();
-
     fbo.begin();
-    
+
     ofBackground(0, 0, 0);
     
     ofPushMatrix();
@@ -77,18 +69,14 @@ void ofApp::draw(){
     ofDrawBitmapString("Frequency Domain", 0, 0);
     plot(fft.getBins(), 128);
     ofPopMatrix();
-    
     string msg = ofToString((int) ofGetFrameRate()) + " fps";
     ofDrawBitmapString(msg, ofGetWidth() - 80, ofGetHeight() - 20);
     
-    
-    
-    
     mTexture.bind();
-    ofSetColor(255);
     shader.begin();
-    shader.setUniform1f("iGlobalTime", ofGetElapsedTimef());
-    shader.setUniform3f("iResolution", ofGetWidth() , ofGetHeight(), 1 ) ;  
+    shader.setUniform1f("iGlobalTime", ofGetElapsedTimef() );
+    shader.setUniform3f("iResolution", ofGetWidth() , ofGetHeight(), 1 ) ;
+    shader.setUniform1f("iVolume", currentAmp) ;
     shader.setUniformTexture("iChannel0", mTexture, 0);
     
     glBegin(GL_QUADS);
@@ -97,14 +85,15 @@ void ofApp::draw(){
     glTexCoord2f(1,1); glVertex3f(w,h,0);
     glTexCoord2f(0,1); glVertex3f(0,h,0);
     glEnd();
-
+    
     ofRect(0, 0, ofGetWidth(), ofGetHeight());
+    
     shader.end();
     mTexture.unbind();
     fbo.end();
-    mTexture.draw(0,0,ofGetWidth(),ofGetHeight());
+
+    //mTexture.draw(0,0,ofGetWidth(),ofGetHeight());
     fbo.draw(0,0,ofGetWidth(), ofGetHeight());
-   
 }
 
 //--------------------------------------------------------------

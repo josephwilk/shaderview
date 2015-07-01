@@ -361,8 +361,10 @@
 		F171898BD12F77CCAD29B7C1 /* LUTPass.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = LUTPass.cpp; path = ../../../addons/ofxPostProcessing/src/LUTPass.cpp; sourceTree = SOURCE_ROOT; };
 		F21017D5316CB2B55CD68641 /* ofxBeat.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxBeat.h; path = ../../../addons/ofxBeat/src/ofxBeat.h; sourceTree = SOURCE_ROOT; };
 		F27637AABA89A235C5974D56 /* RecursiveDirectoryIteratorStategies.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = RecursiveDirectoryIteratorStategies.cpp; path = ../../../addons/ofxIO/libs/ofxIO/src/RecursiveDirectoryIteratorStategies.cpp; sourceTree = SOURCE_ROOT; };
+		F34A4B871B43115B00FD04C3 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		F34A4B891B43115B00FD04C3 /* fftw3f.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = fftw3f.a; sourceTree = "<group>"; };
+		F34A4B8B1B43115B00FD04C3 /* libfftw3f-3.dll */ = {isa = PBXFileReference; lastKnownFileType = file; path = "libfftw3f-3.dll"; sourceTree = "<group>"; };
 		F399B91E98DC31CDA6DDACB4 /* ofxTCPManager.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxTCPManager.cpp; path = ../../../addons/ofxNetwork/src/ofxTCPManager.cpp; sourceTree = SOURCE_ROOT; };
-		F39F61101B42D5BD00C88692 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = lib; sourceTree = "<group>"; };
 		F4030B6B8EDE26878C8D74F1 /* ByteBufferWriter.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ByteBufferWriter.h; path = ../../../addons/ofxIO/libs/ofxIO/include/ofx/IO/ByteBufferWriter.h; sourceTree = SOURCE_ROOT; };
 		F4F5B6B8BA2BD52C646ED908 /* OscException.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscException.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscException.h; sourceTree = SOURCE_ROOT; };
 		F5DB1AC24B8010FC3C556AAC /* RenderPass.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = RenderPass.h; path = ../../../addons/ofxPostProcessing/src/RenderPass.h; sourceTree = SOURCE_ROOT; };
@@ -674,7 +676,7 @@
 		A0535D33570F65575182C18F /* fftw */ = {
 			isa = PBXGroup;
 			children = (
-				F39F61101B42D5BD00C88692 /* lib */,
+				F34A4B861B43115B00FD04C3 /* lib */,
 				F2022DF37286FECB8B9BA5B2 /* include */,
 			);
 			name = fftw;
@@ -989,6 +991,32 @@
 				2D0C0AA4436B2A16530BA991 /* fftw3.h */,
 			);
 			name = include;
+			sourceTree = "<group>";
+		};
+		F34A4B861B43115B00FD04C3 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				F34A4B871B43115B00FD04C3 /* .gitignore */,
+				F34A4B881B43115B00FD04C3 /* osx */,
+				F34A4B8A1B43115B00FD04C3 /* win32 */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		F34A4B881B43115B00FD04C3 /* osx */ = {
+			isa = PBXGroup;
+			children = (
+				F34A4B891B43115B00FD04C3 /* fftw3f.a */,
+			);
+			path = osx;
+			sourceTree = "<group>";
+		};
+		F34A4B8A1B43115B00FD04C3 /* win32 */ = {
+			isa = PBXGroup;
+			children = (
+				F34A4B8B1B43115B00FD04C3 /* libfftw3f-3.dll */,
+			);
+			path = win32;
 			sourceTree = "<group>";
 		};
 		FF8CDF57858E9B94E3237115 /* ip */ = {

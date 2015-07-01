@@ -15,6 +15,10 @@ class ofApp : public ofBaseApp{
     int plotHeight, bufferSize, w,h;
     ofFbo fbo;
     
+    string defaultVert;
+    string mainFrag;
+    float currentAmp;
+    
     
 public:
     bool isShaderDirty;
@@ -34,8 +38,7 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    //void audioReceived(float*, int, int);
-    
+     
     void onDirectoryWatcherItemModified(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt);
     
     void onDirectoryWatcherItemAdded(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt){
