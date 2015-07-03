@@ -1,10 +1,13 @@
 #include "ofApp.h"
+#define STRINGIFY(A) #A
 
 void ofApp::setup(){
     defaultVert = "default.vert";
     mainFrag    = "wave.glsl";
     currentAmp = 0.0;
     
+	shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(ofToDataPath(mainFrag, true)));
+    shader.linkProgram();
     receiver.setup(9177);
     ofAddListener(receiver.onMessageReceived, this, &ofApp::onMessageReceived);
     
@@ -28,7 +31,9 @@ void ofApp::setup(){
     bool listExistingItemsOnStart = true;
     watcher.addPath(folderToWatch, listExistingItemsOnStart, &fileFilter);
     
-    shader.load(ofToDataPath(defaultVert, true), ofToDataPath(mainFrag, true));
+    //shader.load(ofToDataPath(defaultVert, true), ofToDataPath(mainFrag, true));
+    //shader.setupShaderFromSource(GL_VERTEX_SHADER, vert);
+
     
     fft.setup(16384);
 }
@@ -53,7 +58,8 @@ void ofApp::update(){
     //beat.update(ofGetElapsedTimeMillis());
 
     if(isShaderDirty){
-        shader.load(ofToDataPath(defaultVert, true), ofToDataPath(mainFrag, true));
+        shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(ofToDataPath(mainFrag, true)));
+        shader.linkProgram();
         isShaderDirty = false;
     }
 }
@@ -158,6 +164,19 @@ void ofApp::plot(vector<float>& buffer, float scale) {
     }
     ofEndShape();
     ofPopMatrix();
+}
+
+string ofApp::prepareShader(string path){
+//    string path = ofToDataPath(filename);
+	ofFile file;
+
+	if(!file.open(ofToDataPath(path), ofFile::ReadOnly)){
+		return false;
+	}
+    string shaderText = file.readToBuffer().getText();
+	file.close();
+    shaderText = "#version 120\n uniform vec3 iResolution;\n\n" + shaderText;
+    return shaderText;
 }
 
 void ofApp::keyPressed(int key){}
