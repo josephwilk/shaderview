@@ -1,6 +1,5 @@
 #include "ofApp.h"
 
-//--------------------------------------------------------------
 void ofApp::setup(){
     defaultVert = "default.vert";
     mainFrag    = "wave.glsl";
@@ -34,7 +33,6 @@ void ofApp::setup(){
     fft.setup(16384);
 }
 
-//--------------------------------------------------------------
 void ofApp::update(){
     fft.update();
     
@@ -60,7 +58,6 @@ void ofApp::update(){
     }
 }
 
-//--------------------------------------------------------------
 void ofApp::draw(){
     fbo.begin();
 
@@ -99,12 +96,6 @@ void ofApp::draw(){
     fbo.draw(0,0,ofGetWidth(), ofGetHeight());
 }
 
-//--------------------------------------------------------------
-void ofApp::keyPressed(int key){
-
-}
-
-//--------------------------------------------------------------
 void ofApp::keyReleased(int key){
     switch (key) {
 		case ' ':
@@ -118,49 +109,16 @@ void ofApp::keyReleased(int key){
 	}
 }
 
-//--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y ){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::windowResized(int w, int h){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
-
-}
-
-//--------------------------------------------------------------
 void ofApp::onMessageReceived(ofxOscMessage &msg){
     string addr = msg.getAddress();
     string message = msg.getArgAsString(0);
-    ofLogNotice("%s",message);
+    ofLogNotice("%s",addr);
+    
+    if(addr == "/uniform"){
+        ofLogNotice("Uniform change: %s", message);
+    }
 }
 
-//--------------------------------------------------------------
 void ofApp::onDirectoryWatcherItemModified(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt){
     isShaderDirty = true;
     ofLogNotice("Modified: " + evt.item.path());
@@ -180,3 +138,12 @@ void ofApp::plot(vector<float>& buffer, float scale) {
     ofEndShape();
     ofPopMatrix();
 }
+
+void ofApp::keyPressed(int key){}
+void ofApp::mouseMoved(int x, int y ){}
+void ofApp::mouseDragged(int x, int y, int button){}
+void ofApp::mousePressed(int x, int y, int button){}
+void ofApp::mouseReleased(int x, int y, int button){}
+void ofApp::windowResized(int w, int h){}
+void ofApp::gotMessage(ofMessage msg){}
+void ofApp::dragEvent(ofDragInfo dragInfo){ }
