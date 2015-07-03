@@ -6,6 +6,9 @@ void ofApp::setup(){
     mainFrag    = "wave.glsl";
     currentAmp = 0.0;
     
+    receiver.setup(9177);
+    ofAddListener(receiver.onMessageReceived, this, &ofApp::onMessageReceived);
+    
     ofSetVerticalSync(true);
     ofSetFrameRate(60);
     
@@ -151,9 +154,11 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 }
 
 //--------------------------------------------------------------
-//void ofApp::audioReceived(float* input, int bufferSize, int nChannels) {
-    //beat.audioReceived(input, bufferSize, nChannels);
-//}
+void ofApp::onMessageReceived(ofxOscMessage &msg){
+    string addr = msg.getAddress();
+    string message = msg.getArgAsString(0);
+    ofLogNotice("%s",message);
+}
 
 //--------------------------------------------------------------
 void ofApp::onDirectoryWatcherItemModified(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt){

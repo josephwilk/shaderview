@@ -5,6 +5,7 @@
 
 * https://github.com/kylemcdonald/ofxFft
 * https://github.com/bakercp/ofxIO
+* https://github.com/hideyukisaito/ofxOsc
 
 ##License
 

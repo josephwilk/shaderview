@@ -4,6 +4,7 @@
 #include "ofxIO.h"
 #include "ofxFft.h"
 #include "ofxEasyFft.h"
+#include "ofxOsc.h"
 
 class ofApp : public ofBaseApp{
     
@@ -14,6 +15,8 @@ class ofApp : public ofBaseApp{
     ofxEasyFft fft;
     int plotHeight, bufferSize, w,h;
     ofFbo fbo;
+
+    ofxOscReceiver receiver;
     
     string defaultVert;
     string mainFrag;
@@ -37,7 +40,7 @@ public:
     void windowResized(int w, int h);
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
-    
+    void onMessageReceived(ofxOscMessage &msg);
      
     void onDirectoryWatcherItemModified(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt);
     
