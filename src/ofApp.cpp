@@ -35,11 +35,8 @@ void ofApp::setup(){
 
 void ofApp::update(){
     fft.update();
-    
-    currentAmp = *(fft.fft->getAmplitude());
-    if(currentAmp != currentAmp){
-        currentAmp = 0.0;
-    }
+    //TODO: Volume
+    currentAmp = 0.0;
     
     vector<float>& buffer = fft.getBins();
     
