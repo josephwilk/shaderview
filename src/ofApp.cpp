@@ -77,7 +77,11 @@ void ofApp::draw(){
     shader.setUniform1f("iGlobalTime", ofGetElapsedTimef() );
     shader.setUniform3f("iResolution", ofGetWidth() , ofGetHeight(), 1 ) ;
     shader.setUniform1f("iVolume", currentAmp) ;
+    for(auto const &it1 : uniforms) {
+        shader.setUniform1f(it1.first, uniforms[it1.first]);
+    }
     shader.setUniformTexture("iChannel0", mTexture, 0);
+    
     
     glBegin(GL_QUADS);
     glTexCoord2f(0,0); glVertex3f(0,0,0);
@@ -111,12 +115,29 @@ void ofApp::keyReleased(int key){
 
 void ofApp::onMessageReceived(ofxOscMessage &msg){
     string addr = msg.getAddress();
-    string message = msg.getArgAsString(0);
-    ofLogNotice("%s",addr);
+    ofLogNotice("OSC message, addr:",addr);
     
-    if(addr == "/uniform"){
-        ofLogNotice("Uniform change: %s", message);
+    if(addr == "/uniform"){//An update on a Uniform variable
+        string uniformName  = msg.getArgAsString(0);
+        float  uniformValue = msg.getArgAsFloat(1);
+        uniforms[uniformName] = uniformValue;
+        ofLogNotice("Uniform change. "+ uniformName + " => " +ofToString(uniforms["iExample"]));
     }
+    if(addr == "/smoothed-uniform"){//An update to a Uniform but smoothed
+        string uniformName  = msg.getArgAsString(0);
+        float  uniformValue = msg.getArgAsFloat(1);
+        float smoothRate = 0.05;
+
+        if(fabs(uniforms[uniformName]-uniformValue) < 0.001){}
+        else if(uniforms[uniformName] > uniformValue){
+            uniforms[uniformName] -= smoothRate;
+        }
+        else if(uniforms[uniformName] < uniformValue){
+            uniforms[uniformName] += smoothRate;
+        }
+        ofLogNotice("Smoothed Uniform change. "+ uniformName + " => " +ofToString(uniforms["iExample"]));
+    }
+
 }
 
 void ofApp::onDirectoryWatcherItemModified(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt){
