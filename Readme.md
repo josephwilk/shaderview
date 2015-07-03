@@ -1,5 +1,19 @@
-#shaderview
+#ShaderView
 
+
+### OSC based Uniforms
+
+Osc Server listens for:
+* "/uniform" <UniformName> <FloatValue>
+* "/smoothed-uniform" <UniformName> <FloatValue>
+
+Clojure Example:
+
+```clojure
+(use 'overtone.osc)
+(def client (osc-client "localhost" 9177))
+(osc-send client "/uniform" "iExample" (float 100.0))
+```
 
 ### OpenFramework Plugins
 
