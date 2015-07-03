@@ -3,12 +3,15 @@
 
 ### OSC based Uniforms
 
-Osc Server listens for:
+Osc Server listening on port 9177: 
+
+Messages / Arguments
 * "/uniform" <UniformName> <FloatValue>
 * "/smoothed-uniform" <UniformName> <FloatValue>
 
-Clojure Example:
+The uniforms are updated and sent to running shader.
 
+Clojure example (though any OSC client will do):
 ```clojure
 (use 'overtone.osc)
 (def client (osc-client "localhost" 9177))
@@ -20,6 +23,10 @@ Clojure Example:
 * https://github.com/kylemcdonald/ofxFft
 * https://github.com/bakercp/ofxIO
 * https://github.com/hideyukisaito/ofxOsc
+
+### Credits
+
+Inspired by Roger Allen's Shadertone: https://github.com/overtone/shadertone
 
 ##License
 
