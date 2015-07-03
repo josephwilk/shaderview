@@ -26,6 +26,7 @@ Clojure example (though any OSC client will do):
 * https://github.com/kylemcdonald/ofxFft
 * https://github.com/bakercp/ofxIO
 * https://github.com/hideyukisaito/ofxOsc
+* https://github.com/darrenmothersele/ofxEditor
 
 ### Credits
 
