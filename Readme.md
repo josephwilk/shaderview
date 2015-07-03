@@ -1,13 +1,16 @@
 #ShaderView
 
+Mad scrawlings of thoughts and ideas. Work in progress. Unstable.
 
 ### OSC based Uniforms
 
 Osc Server listening on port 9177: 
 
+```
 Messages / Arguments
 * "/uniform" <UniformName> <FloatValue>
 * "/smoothed-uniform" <UniformName> <FloatValue>
+```
 
 The uniforms are updated and sent to running shader.
 
