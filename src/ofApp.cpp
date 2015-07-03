@@ -2,12 +2,18 @@
 #define STRINGIFY(A) #A
 
 void ofApp::setup(){
+    editor.addCommand('a', this, &ofApp::toggleEditor);
+    
     defaultVert = "default.vert";
     mainFrag    = "wave.glsl";
     currentAmp = 0.0;
     
+    editor.loadFile(ofToDataPath(mainFrag, true), 1);
+    editor.update();
+    
 	shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(ofToDataPath(mainFrag, true)));
     shader.linkProgram();
+    
     receiver.setup(9177);
     ofAddListener(receiver.onMessageReceived, this, &ofApp::onMessageReceived);
     
@@ -33,8 +39,6 @@ void ofApp::setup(){
     
     //shader.load(ofToDataPath(defaultVert, true), ofToDataPath(mainFrag, true));
     //shader.setupShaderFromSource(GL_VERTEX_SHADER, vert);
-
-    
     fft.setup(16384);
 }
 
@@ -55,7 +59,6 @@ void ofApp::update(){
         signal[512+i] = (unsigned char) audioSig;
     }
     mTexture.loadData(signal, 512, 2, GL_LUMINANCE);
-    //beat.update(ofGetElapsedTimeMillis());
 
     if(isShaderDirty){
         shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(ofToDataPath(mainFrag, true)));
@@ -100,6 +103,11 @@ void ofApp::draw(){
     
     shader.end();
     mTexture.unbind();
+    
+    if (editorVisible) {
+        editor.draw();
+    }
+    
     fbo.end();
 
     //mTexture.draw(0,0,ofGetWidth(),ofGetHeight());
@@ -113,6 +121,7 @@ void ofApp::keyReleased(int key){
 			break;
 		case OF_KEY_F11:
 			ofToggleFullscreen();
+            isFullscreen= true;
 			break;
 		default:
 			break;
@@ -179,7 +188,24 @@ string ofApp::prepareShader(string path){
     return shaderText;
 }
 
-void ofApp::keyPressed(int key){}
+void ofApp::toggleEditor(void * _o){
+    ((ofApp *)_o)->editorVisible = !((ofApp *)_o)->editorVisible;
+}
+
+void ofApp::toggleEditorSave(){
+    editor.saveFile(ofToDataPath(mainFrag, true), 1);
+}
+
+void ofApp::keyPressed(int key){
+    bool alt   = (bool) (ofGetKeyPressed(OF_KEY_ALT));
+    bool shift = (bool) (ofGetKeyPressed(OF_KEY_SHIFT));
+    bool cmd   = (bool) (ofGetKeyPressed(OF_KEY_COMMAND));
+    bool ctrl  = (bool) (ofGetKeyPressed(OF_KEY_CONTROL));
+    if(cmd && key == 's'){
+        toggleEditorSave();
+    }
+}
+
 void ofApp::mouseMoved(int x, int y ){}
 void ofApp::mouseDragged(int x, int y, int button){}
 void ofApp::mousePressed(int x, int y, int button){}
