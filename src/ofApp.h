@@ -5,9 +5,10 @@
 #include "ofxFft.h"
 #include "ofxEasyFft.h"
 #include "ofxOsc.h"
+#include "ofxEditor.h";
 
 class ofApp : public ofBaseApp{
-    
+   
     map<string, float> uniforms;
     
     ofx::IO::DirectoryWatcherManager watcher;
@@ -23,9 +24,13 @@ class ofApp : public ofBaseApp{
     string defaultVert;
     string mainFrag;
     float currentAmp;
-    
+    ofxEditor editor;
+    bool editorVisible;
+    bool isFullscreen;
+   
     
 public:
+    ofApp() : editor(2), editorVisible(false), isFullscreen(false) {}
     bool isShaderDirty;
     void setup();
     void update();
@@ -43,7 +48,13 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     void onMessageReceived(ofxOscMessage &msg);
-     
+    string prepareShader(string path);
+    
+    void toggleEditorSave(void);
+    
+    static void toggleEditor(void *);
+    
+    
     void onDirectoryWatcherItemModified(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt);
     
     void onDirectoryWatcherItemAdded(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt){
