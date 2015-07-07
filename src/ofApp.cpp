@@ -61,7 +61,11 @@ void ofApp::update(){
     mTexture.loadData(signal, 512, 2, GL_LUMINANCE);
 
     if(isShaderDirty){
+        string oldShader = shader.getShaderSource(GL_FRAGMENT_SHADER);
         shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(ofToDataPath(mainFrag, true)));
+        if(shader.isLoaded() != true){
+            shader.setupShaderFromSource(GL_FRAGMENT_SHADER, oldShader);
+        }
         shader.linkProgram();
         isShaderDirty = false;
     }
@@ -107,6 +111,9 @@ void ofApp::draw(){
     if (editorVisible) {
         editor.draw();
     }
+
+    string msg = ofToString((int) ofGetFrameRate()) + " fps";
+    ofDrawBitmapString(msg, ofGetWidth() - 80, ofGetHeight() - 20);
     
     fbo.end();
 
@@ -190,6 +197,7 @@ string ofApp::prepareShader(string path){
 
 void ofApp::toggleEditor(void * _o){
     ((ofApp *)_o)->editorVisible = !((ofApp *)_o)->editorVisible;
+    ((ofApp *)_o)->editor.loadFile(ofToDataPath(((ofApp *)_o)->mainFrag, true), 1);
 }
 
 void ofApp::toggleEditorSave(){
