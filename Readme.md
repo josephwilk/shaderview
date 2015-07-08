@@ -10,6 +10,7 @@ Osc Server listening on port 9177:
 Messages / Arguments
 * "/uniform" <UniformName> <FloatValue>
 * "/smoothed-uniform" <UniformName> <FloatValue>
+* "/shader" <StringValue>
 ```
 
 The uniforms are updated and sent to running shader.
@@ -18,7 +19,9 @@ Clojure example (though any OSC client will do):
 ```clojure
 (use 'overtone.osc)
 (def client (osc-client "localhost" 9177))
+
 (osc-send client "/uniform" "iExample" (float 100.0))
+(osc-send client "/shader" "/usr/josephwilk/repl_electric.glsl")
 ```
 
 ### OpenFramework Plugins
@@ -27,6 +30,7 @@ Clojure example (though any OSC client will do):
 * https://github.com/bakercp/ofxIO
 * https://github.com/hideyukisaito/ofxOsc
 * https://github.com/darrenmothersele/ofxEditor
+* https://github.com/neilmendoza/ofxPostProcessing
 
 ### Credits
 

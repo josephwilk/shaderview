@@ -6,6 +6,7 @@
 #include "ofxEasyFft.h"
 #include "ofxOsc.h"
 #include "ofxEditor.h";
+#include "ofxPostProcessing.h"
 
 class ofApp : public ofBaseApp{
    
@@ -18,6 +19,8 @@ class ofApp : public ofBaseApp{
     ofxEasyFft fft;
     int plotHeight, bufferSize, w,h;
     ofFbo fbo;
+    
+    ofxPostProcessing post;
 
     ofxOscReceiver receiver;
     
