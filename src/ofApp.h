@@ -30,6 +30,7 @@ class ofApp : public ofBaseApp{
     ofxEditor editor;
     bool editorVisible;
     bool isFullscreen;
+    bool shaderErrored;
    
     
 public:

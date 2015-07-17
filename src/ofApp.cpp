@@ -2,6 +2,7 @@
 #define STRINGIFY(A) #A
 
 void ofApp::setup(){
+    shaderErrored = false;
     ofDisableArbTex();
 
     editor.addCommand('a', this, &ofApp::toggleEditor);
@@ -86,10 +87,14 @@ void ofApp::update(){
 
     if(isShaderDirty){
         string oldShader = shader.getShaderSource(GL_FRAGMENT_SHADER);
-        shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(ofToDataPath(mainFrag, true)));
-       // shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
-        if(shader.isLoaded() != true){
+        bool r = shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(ofToDataPath(mainFrag, true)));
+        //shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
+        if(!r){
             shader.setupShaderFromSource(GL_FRAGMENT_SHADER, oldShader);
+            shaderErrored = true;
+        }
+        else{
+            shaderErrored = false;
         }
         shader.linkProgram();
         isShaderDirty = false;
@@ -132,6 +137,11 @@ void ofApp::draw(){
     
     if (editorVisible) {
         editor.draw();
+    }
+    
+    if (shaderErrored){
+        string errorMsg = "ERROR";
+        ofDrawBitmapString(errorMsg, ofGetWidth() - 80, ofGetHeight() - 20);
     }
 
     string msg = ofToString((int) ofGetFrameRate()) + " fps";
@@ -244,6 +254,11 @@ void ofApp::keyPressed(int key){
     bool ctrl  = (bool) (ofGetKeyPressed(OF_KEY_CONTROL));
     if(cmd && key == 's'){
         toggleEditorSave();
+    }
+    else if(cmd && key == 'f'){
+        ofToggleFullscreen();
+        isFullscreen= true;
+
     }
 }
 
