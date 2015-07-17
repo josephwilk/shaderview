@@ -141,7 +141,10 @@ void ofApp::draw(){
     
     if (shaderErrored){
         string errorMsg = "ERROR";
-        ofDrawBitmapString(errorMsg, ofGetWidth() - 80, ofGetHeight() - 20);
+        ofColor red(255, 0, 0);
+        ofColor black(0, 0, 0);
+        
+        ofDrawBitmapStringHighlight(errorMsg, ofGetWidth() - 80, 20.0, red, black);
     }
 
     string msg = ofToString((int) ofGetFrameRate()) + " fps";
