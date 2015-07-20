@@ -15,7 +15,14 @@ Messages / Arguments
 
 The uniforms are updated and sent to running shader.
 
-Clojure example (though any OSC client will do):
+Ruby Example:
+```ruby
+require 'osc-ruby'
+@client = OSC::Client.new('localhost', 9177)
+@client.send(OSC::Message.new("/shader" , "/Users/josephwilk/shaders/wave.glsl"))
+```
+
+Clojure example:
 ```clojure
 (use 'overtone.osc)
 (def client (osc-client "localhost" 9177))
