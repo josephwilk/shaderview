@@ -3,6 +3,7 @@
 
 void ofApp::setup(){
     shaderErrored = false;
+    showFreqGraph = false;
     ofDisableArbTex();
 
     editor.addCommand('a', this, &ofApp::toggleEditor);
@@ -26,7 +27,7 @@ void ofApp::setup(){
     editor.update();
     
 	shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(ofToDataPath(mainFrag, true)));
-   // shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
+    //shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
     shader.linkProgram();
     
     receiver.setup(9177);
@@ -51,13 +52,6 @@ void ofApp::setup(){
     post.createPass<LimbDarkeningPass>()->setEnabled(false);
     post.createPass<RGBShiftPass>()->setEnabled(false);
     
-    fbo.allocate(ofGetWidth(),ofGetHeight(), GL_RGB);
-    fbo.begin();
-    ofSetColor(ofColor::white);
-    ofClear(0,0,0,0);
-    ofCircle(2, 2, 2);
-    fbo.end();
-
     isShaderDirty = true;
     watcher.registerAllEvents(this);
     std::string folderToWatch = ofToDataPath("", true);
@@ -103,18 +97,21 @@ void ofApp::update(){
 
 void ofApp::draw(){
     fbo.begin();
-    //post.begin();
-    /*
-    ofBackground(0, 0, 0);
-    ofPushMatrix();
-    ofTranslate(16, 16);
-    ofSetColor(255);
-    ofDrawBitmapString("Frequency Domain", 0, 0);
-    plot(fft.getBins(), 128);
-    ofPopMatrix();
-    string msg = ofToString((int) ofGetFrameRate()) + " fps";
-    ofDrawBitmapString(msg, ofGetWidth() - 80, ofGetHeight() - 20);
-    */
+
+    if(showFreqGraph){
+        ofBackground(0, 0, 0);
+        ofPushMatrix();
+        ofTranslate(16, 16);
+        ofSetColor(255);
+        ofDrawBitmapString("Frequency Domain", 0, 0);
+        plot(fft.getBins(), 128);
+        ofPopMatrix();
+        string msg = ofToString((int) ofGetFrameRate()) + " fps";
+        ofDrawBitmapString(msg, ofGetWidth() - 80, ofGetHeight() - 20);
+    }
+
+    ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
+    
     mTexture.bind();
     shader.begin();
     shader.setUniform1f("iGlobalTime", ofGetElapsedTimef() );
@@ -143,18 +140,14 @@ void ofApp::draw(){
         string errorMsg = "ERROR";
         ofColor red(255, 0, 0);
         ofColor black(0, 0, 0);
-        
         ofDrawBitmapStringHighlight(errorMsg, ofGetWidth() - 80, 20.0, red, black);
     }
 
     string msg = ofToString((int) ofGetFrameRate()) + " fps";
-    ofDrawBitmapString(msg, ofGetWidth() - 80, ofGetHeight() - 20);
-    
-   // post.end();
+    ofDrawBitmapString(msg, ofGetWidth()-80, ofGetHeight()-20, 0);
+   
     fbo.end();
-    //mTexture.draw(0,0,ofGetWidth(),ofGetHeight());
     fbo.draw(0,0,ofGetWidth(), ofGetHeight());
-  //  post.draw(0,0, ofGetWidth(), ofGetHeight());
 }
 
 void ofApp::keyReleased(int key){

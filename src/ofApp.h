@@ -31,6 +31,7 @@ class ofApp : public ofBaseApp{
     bool editorVisible;
     bool isFullscreen;
     bool shaderErrored;
+    bool showFreqGraph;
    
     
 public:
