@@ -2,6 +2,7 @@
 #define STRINGIFY(A) #A
 
 void ofApp::setup(){
+    listeningOnPort = 9177;
     shaderErrored = false;
     showFreqGraph = false;
     ofDisableArbTex();
@@ -30,7 +31,7 @@ void ofApp::setup(){
     //shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
     shader.linkProgram();
     
-    receiver.setup(9177);
+    receiver.setup(listeningOnPort);
     ofAddListener(receiver.onMessageReceived, this, &ofApp::onMessageReceived);
     
   //  ofSetVerticalSync(true);

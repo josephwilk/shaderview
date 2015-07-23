@@ -32,6 +32,7 @@ class ofApp : public ofBaseApp{
     bool isFullscreen;
     bool shaderErrored;
     bool showFreqGraph;
+    int listeningOnPort;
    
     
 public:
