@@ -173,7 +173,7 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
         string uniformName  = msg.getArgAsString(0);
         float  uniformValue = msg.getArgAsFloat(1);
         uniforms[uniformName] = uniformValue;
-        ofLogNotice("Uniform change. "+ uniformName + " => " +ofToString(uniforms["iExample"]));
+        ofLogNotice("Uniform change. "+ uniformName + " => " +ofToString(uniforms[uniformName]));
     }
     if(addr == "/smoothed-uniform"){//An update to a Uniform but smoothed
         string uniformName  = msg.getArgAsString(0);
@@ -187,7 +187,7 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
         else if(uniforms[uniformName] < uniformValue){
             uniforms[uniformName] += smoothRate;
         }
-        ofLogNotice("Smoothed Uniform change. "+ uniformName + " => " +ofToString(uniforms["iExample"]));
+        ofLogNotice("Smoothed Uniform change. "+ uniformName + " => " +ofToString(uniforms[uniformName]));
     }
     if(addr == "/shader"){ //Load a new shader
         string shaderFile  = msg.getArgAsString(0);
