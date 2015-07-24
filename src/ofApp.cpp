@@ -191,10 +191,20 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
     }
     if(addr == "/shader"){ //Load a new shader
         string shaderFile  = msg.getArgAsString(0);
-        if(mainFrag != shaderFile){
-            mainFrag = shaderFile;
-            isShaderDirty = true;
+        int found = shaderFile.find_last_of("/");
+        string shaderPath = shaderFile.substr(0, found);
+        found = mainFrag.find_last_of("/");
+        string currentPath = shaderFile.substr(0, found);
+
+        if(watcher.isWatching(currentPath)){
+            watcher.removePath(currentPath);
         }
+        if(!watcher.isWatching(shaderPath)){
+            watcher.addPath(shaderPath, true, &fileFilter);
+        }
+
+        mainFrag = shaderFile;
+        isShaderDirty = true;
     }
 
 }
