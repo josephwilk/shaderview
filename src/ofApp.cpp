@@ -191,8 +191,10 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
     }
     if(addr == "/shader"){ //Load a new shader
         string shaderFile  = msg.getArgAsString(0);
-        mainFrag = shaderFile;
-        isShaderDirty = true;
+        if(mainFrag != shaderFile){
+            mainFrag = shaderFile;
+            isShaderDirty = true;
+        }
     }
 
 }
