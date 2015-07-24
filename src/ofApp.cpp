@@ -220,7 +220,6 @@ void ofApp::plot(vector<float>& buffer, float scale) {
 }
 
 string ofApp::prepareShader(string path){
-//    string path = ofToDataPath(filename);
 	ofFile file;
 
 	if(!file.open(ofToDataPath(path), ofFile::ReadOnly)){
