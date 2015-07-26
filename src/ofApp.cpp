@@ -247,6 +247,7 @@ string ofApp::prepareShader(string path){
     shaderText =  STRINGIFY(
                             uniform vec3 iResolution;
                             uniform float iGlobalTime;
+                            uniform vec2 iMouse;
                             uniform vec4 iDate;
 ) + shaderText;
     
