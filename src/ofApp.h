@@ -10,6 +10,14 @@
 
 class ofApp : public ofBaseApp{
    
+    //vector to hold all triangles
+	vector<ofMeshFace> triangles;
+	//mesh to hold triangles for drawing as a single unit
+	ofMesh testMesh;
+    //traditional sphere primitive which will look like strips
+	ofSpherePrimitive sphere;
+    string defaultGeom;
+    
     map<string, float> uniforms;
     
     ofx::IO::DirectoryWatcherManager watcher;
@@ -19,6 +27,8 @@ class ofApp : public ofBaseApp{
     ofxEasyFft fft;
     int plotHeight, bufferSize, w,h;
     ofFbo fbo;
+    
+    ofImage image;
     
     ofxPostProcessing post;
 

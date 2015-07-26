@@ -6,31 +6,119 @@ void ofApp::setup(){
     shaderErrored = false;
     showFreqGraph = false;
     ofDisableArbTex();
+    
+	shader.setGeometryInputType(GL_TRIANGLES);
+	shader.setGeometryOutputType(GL_TRIANGLES);
+	shader.setGeometryOutputCount(4);
 
+    
+//bool succ = image.loadImage("/Users/josephwilk/Desktop/hs-2006-17-c-xlarge_web.jpg");
+    bool succ = image.loadImage("/Users/josephwilk/Dropbox/Screenshots/Screenshot 2015-07-26 20.09.55.png");
+  
+    image.resize(1426*0.8, 1253*0.8);
     editor.addCommand('a', this, &ofApp::toggleEditor);
     
     mainFrag    = "nil.glsl";
     currentAmp = 0.0;
-    
+   
     defaultVert = STRINGIFY(
                             uniform mat4 modelViewProjectionMatrix;
+                            uniform float phase = 0.0;		//Phase for "sin" function
+                            uniform float distortAmount = 0.25; 	//Amount of distortion
+                            uniform sampler2D iChannel0;
                             
                             void main(){
-                                vec4 pos = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
-                                gl_Position = pos;
+                                
+                                //Get original position of the vertex
+                                vec3 v = gl_Vertex.xyz;
+                                
+                                //the original code for distort occured in the vertex shader
+                                /*
+                                 //Compute value of distortion for current vertex
+                                 float distort = distortAmount * sin( phase + 0.015 * v.y );
+                                 
+                                 //Move the position
+                                 v.x /= 1.0 + distort;
+                                 v.y /= 1.0 + distort;
+                                 v.z /= 1.0 + distort;
+                                 */
+                                //Set output vertex position
+                                vec4 posHomog = vec4( v, 1.0 );
+                                gl_Position = gl_ModelViewProjectionMatrix * posHomog;
+                                
+                                //Set output texture coordinate and color in a standard way
                                 gl_TexCoord[0] = gl_MultiTexCoord0;
-                                gl_FrontColor = gl_Color;
-                            }
+                                gl_FrontColor = gl_Color;                            }
     );
     
     defaultVert = "#version 120\n" + defaultVert;
     
+    
+    defaultGeom = STRINGIFY(
+                                   // get the variables for speed and phase (mousex and mousey)
+                                   uniform float phase = 0.0;		//Phase for "sin" function
+                                   uniform float distortAmount = 0.25; 	//Amount of distortion
+                                   //the geometry shader has been set to recieve triangles
+                                   //therefor it has three points to work with
+                                   uniform sampler2D iChannel0;
+                                   void main(void)
+    {
+        vec3 p0 = gl_PositionIn[0].xyz;
+        vec3 p1 = gl_PositionIn[1].xyz;
+        vec3 p2 = gl_PositionIn[2].xyz;
+        vec3 dir0 = p1 - p0;
+        vec3 dir1 = p2 - p1;
+        
+        //	find the normal of the face (direction it is facing)
+        vec3 N = normalize(cross(dir1,dir0));
+        
+        float boomx = smoothstep(0.0,1.0, texture2D(iChannel0, vec2(0.0,p0.y)).x);
+        float boomy = smoothstep(0.0,1.0, texture2D(iChannel0, vec2(0.0,p0.y)).x);
+
+        float distort = distortAmount * sin( phase + 0.01 * p0.y ); //deform along y axis
+        
+		//Move the position
+        N.x /= 1.0 + distort +boomx;
+        N.y /= 1.0 + distort + boomy;
+        N.z /= 1.0 + distort;
+        
+        //uncomment this section if you would like the deformation to be along two axis instead of just one.
+        /*
+         float distort2 = distortAmount * sin( phase + 0.01 * p0.x ); //deform along x axis
+         //Move the position
+         N.x /= 1.0 + distort2;
+         N.y /= 1.0 + distort2;
+         N.z /= 1.0 + distort2;
+         */ 
+		//remember there are three points to be moved
+        for (int i = 0; i < 3; i++)
+        {
+            gl_Position = gl_PositionIn[i] + vec4(50*N, 0.0);
+            EmitVertex();
+        }
+        
+        EndPrimitive();
+        
+    }
+
+    );
+    
+    defaultGeom = "#version 120\n" + defaultGeom;
+    
     editor.loadFile(ofToDataPath(mainFrag, true), 1);
     editor.update();
     
+    shader.setGeometryInputType(GL_TRIANGLES);
+	shader.setGeometryOutputType(GL_TRIANGLES);
+	shader.setGeometryOutputCount(4);
+    
 	shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(ofToDataPath(mainFrag, true)));
-    shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
+    //shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
+    //shader.setupShaderFromSource(GL_GEOMETRY_SHADER, defaultGeom);
     shader.linkProgram();
+    
+    testMesh.setMode(OF_PRIMITIVE_POINTS);
+
     
     receiver.setup(listeningOnPort);
     ofAddListener(receiver.onMessageReceived, this, &ofApp::onMessageReceived);
@@ -53,6 +141,59 @@ void ofApp::setup(){
     post.createPass<GodRaysPass>()->setEnabled(false);
     post.createPass<LimbDarkeningPass>()->setEnabled(false);
     post.createPass<RGBShiftPass>()->setEnabled(false);
+    
+    //sphere.setRadius(300.0);
+	// this sets resolution of 'sphere'.
+	// if this were an ofIcoSphere then a number such as 2-4 is appropriate
+	//sphere.setResolution(25);
+	
+	// this turns the sphere into a triangle mesh made up of the faces.
+	//triangles = sphere.getMesh().getUniqueFaces();
+	//testMesh.setFromTriangles(triangles);
+    
+    testMesh.setMode(OF_PRIMITIVE_POINTS);
+    
+    float intensityThreshold = 150.0;
+    int w = image.getWidth();
+    int h = image.getHeight();
+    for (int x=0; x<w; ++x) {
+        for (int y=0; y<h; ++y) {
+            ofColor c = image.getColor(x, y);
+            float intensity = c.getLightness();
+            if (intensity >= intensityThreshold) {
+                // We shrunk our image by a factor of 4, so we need to multiply our pixel
+                // locations by 4 in order to have our mesh cover the openFrameworks window
+                 float saturation = c.getSaturation();
+                float z = ofMap(saturation, 0, 255, -100, 100);
+                ofVec3f pos(4*x, 4*y, z);
+                testMesh.addVertex(pos);
+                testMesh.addColor(c);
+            }
+        }
+    }
+    
+    
+    testMesh.setMode(OF_PRIMITIVE_LINES);
+    
+    // ...
+    // Omitting the code for creating vertices for clarity
+    // but don't erase it from your file!
+    
+    // Let's add some lines!
+    float connectionDistance = 30;
+    int numVerts = testMesh.getNumVertices();
+    for (int a=0; a<numVerts; ++a) {
+        ofVec3f verta = testMesh.getVertex(a);
+        for (int b=a+1; b<numVerts; ++b) {
+            ofVec3f vertb = testMesh.getVertex(b);
+            float distance = verta.distance(vertb);
+            if (distance <= connectionDistance) {
+                testMesh.addIndex(a);
+                testMesh.addIndex(b);
+            }
+        }
+    }
+    
     
     isShaderDirty = true;
     watcher.registerAllEvents(this);
@@ -81,10 +222,16 @@ void ofApp::update(){
     }
     mTexture.loadData(signal, 512, 2, GL_LUMINANCE);
 
-    if(isShaderDirty){
+    if(false){
+        shader.setGeometryInputType(GL_TRIANGLES);
+        shader.setGeometryOutputType(GL_TRIANGLES);
+        shader.setGeometryOutputCount(4);
+
         string oldShader = shader.getShaderSource(GL_FRAGMENT_SHADER);
         bool r = shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(ofToDataPath(mainFrag, true)));
         shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
+        shader.setupShaderFromSource(GL_GEOMETRY_SHADER, defaultGeom);
+
         if(!r){
             shader.setupShaderFromSource(GL_FRAGMENT_SHADER, oldShader);
             shaderErrored = true;
@@ -100,6 +247,12 @@ void ofApp::update(){
 void ofApp::draw(){
     fbo.begin();
 
+    ofEnableDepthTest();				//Enable z-buffering
+    
+	//Set a gradient background from white to gray
+	//for adding an illusion of visual depth to the scene
+	ofBackgroundGradient( ofColor( 255 ), ofColor( 128 ) );
+    
     if(showFreqGraph){
         ofBackground(0, 0, 0);
         ofPushMatrix();
@@ -115,7 +268,7 @@ void ofApp::draw(){
     ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
     
     mTexture.bind();
-    shader.begin();
+    /*shader.begin();
 
     float mx = mouseX / (float)ofGetWidth();
     mx = ofClamp(mx, 0,1);
@@ -138,8 +291,11 @@ void ofApp::draw(){
     glTexCoord2f(0,1); glVertex3f(0,ofGetHeight(),0);
     glEnd();
     
-    shader.end();
-    mTexture.unbind();
+    shader.setGeometryOutputCount(1024);
+
+     shader.end();
+     mTexture.unbind();
+*/
     
     if (editorVisible) {
         editor.draw();
@@ -154,7 +310,22 @@ void ofApp::draw(){
 
     string msg = ofToString((int) ofGetFrameRate()) + " fps";
     ofDrawBitmapString(msg, ofGetWidth()-80, ofGetHeight()-20, 0);
-   
+
+
+    
+    ofPushMatrix();	//Store the coordinate system
+    ofTranslate( ofGetWidth()/8, 0, ofGetHeight()/8.0);
+    float time = ofGetElapsedTimef();	//Get time in seconds
+    float angle = time * 10;			//Compute angle. We rotate at speed 10 degrees per second
+    ofRotate(angle, 0, 1, 0 );
+    ofColor centerColor = ofColor(85, 78, 68);
+    ofColor edgeColor(0, 0, 0);
+    //ofBackgroundGradient(centerColor, edgeColor, OF_GRADIENT_CIRCULAR);
+    testMesh.draw();
+    ofPopMatrix();
+
+
+    
     fbo.end();
     fbo.draw(0,0,ofGetWidth(), ofGetHeight());
 }
