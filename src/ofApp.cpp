@@ -13,9 +13,12 @@ void ofApp::setup(){
 
     
 //bool succ = image.loadImage("/Users/josephwilk/Desktop/hs-2006-17-c-xlarge_web.jpg");
-    bool succ = image.loadImage("/Users/josephwilk/Dropbox/Screenshots/Screenshot 2015-07-26 20.09.55.png");
-  
-    image.resize(1426*0.8, 1253*0.8);
+    //bool succ = image.loadImage("/Users/josephwilk/Dropbox/Screenshots/Screenshot 2015-07-26 20.09.55.png");
+    
+    bool succ = image.loadImage("/Users/josephwilk/Dropbox/Screenshots/Screenshot 2015-07-26 21.12.43.png");
+    
+    
+    image.resize(image.getWidth()*0.4, image.getHeight()*0.4);
     editor.addCommand('a', this, &ofApp::toggleEditor);
     
     mainFrag    = "nil.glsl";
@@ -117,6 +120,8 @@ void ofApp::setup(){
     //shader.setupShaderFromSource(GL_GEOMETRY_SHADER, defaultGeom);
     shader.linkProgram();
     
+    
+    ofSetFrameRate(60);
     testMesh.setMode(OF_PRIMITIVE_POINTS);
 
     
@@ -151,8 +156,9 @@ void ofApp::setup(){
 	//triangles = sphere.getMesh().getUniqueFaces();
 	//testMesh.setFromTriangles(triangles);
     
-    testMesh.setMode(OF_PRIMITIVE_POINTS);
     
+    
+    testMesh.setMode(OF_PRIMITIVE_POINTS);
     float intensityThreshold = 150.0;
     int w = image.getWidth();
     int h = image.getHeight();
@@ -161,13 +167,12 @@ void ofApp::setup(){
             ofColor c = image.getColor(x, y);
             float intensity = c.getLightness();
             if (intensity >= intensityThreshold) {
-                // We shrunk our image by a factor of 4, so we need to multiply our pixel
-                // locations by 4 in order to have our mesh cover the openFrameworks window
-                 float saturation = c.getSaturation();
+                float saturation = c.getSaturation();
                 float z = ofMap(saturation, 0, 255, -100, 100);
                 ofVec3f pos(4*x, 4*y, z);
                 testMesh.addVertex(pos);
                 testMesh.addColor(c);
+                offsets.push_back(ofVec3f(ofRandom(0,100000), ofRandom(0,100000), ofRandom(0,100000)));
             }
         }
     }
@@ -175,11 +180,6 @@ void ofApp::setup(){
     
     testMesh.setMode(OF_PRIMITIVE_LINES);
     
-    // ...
-    // Omitting the code for creating vertices for clarity
-    // but don't erase it from your file!
-    
-    // Let's add some lines!
     float connectionDistance = 30;
     int numVerts = testMesh.getNumVertices();
     for (int a=0; a<numVerts; ++a) {
@@ -242,16 +242,39 @@ void ofApp::update(){
         shader.linkProgram();
         isShaderDirty = false;
     }
+    
+    int numVerts = testMesh.getNumVertices();
+    for (int i=0; i<numVerts; ++i) {
+        ofVec3f vert = testMesh.getVertex(i);
+        
+        float time = ofGetElapsedTimef();
+        float timeScale = 0.0;
+        float displacementScale = 0.75;
+        ofVec3f timeOffsets = offsets[i];
+        
+        // A typical design pattern for using Perlin noise uses a couple parameters:
+        // ofSignedNoise(time*timeScale+timeOffset)*displacementScale
+        //     ofSignedNoise(time) gives us noise values that change smoothly over time
+        //     ofSignedNoise(time*timeScale) allows us to control the smoothness of our noise (smaller timeScale, smoother values)
+        //     ofSignedNoise(time+timeOffset) allows us to use the same Perlin noise function to control multiple things and have them look as if they are moving independently
+        //     ofSignedNoise(time)*displacementScale allows us to change the bounds of the noise from [-1, 1] to whatever we want
+        // Combine all of those parameters together, and you've got some nice control over your noise
+        
+        vert.x += (ofSignedNoise(time*timeScale+timeOffsets.x)) * displacementScale;
+        vert.y += (ofSignedNoise(time*timeScale+timeOffsets.y)) * displacementScale;
+        vert.z += (ofSignedNoise(time*timeScale+timeOffsets.z)) * displacementScale;
+        testMesh.setVertex(i, vert);
+    }
 }
 
 void ofApp::draw(){
     fbo.begin();
 
-    ofEnableDepthTest();				//Enable z-buffering
+    //ofEnableDepthTest();				//Enable z-buffering
     
 	//Set a gradient background from white to gray
 	//for adding an illusion of visual depth to the scene
-	ofBackgroundGradient( ofColor( 255 ), ofColor( 128 ) );
+	//ofBackgroundGradient( ofColor( 255 ), ofColor( 128 ) );
     
     if(showFreqGraph){
         ofBackground(0, 0, 0);
@@ -268,7 +291,7 @@ void ofApp::draw(){
     ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
     
     mTexture.bind();
-    /*shader.begin();
+    shader.begin();
 
     float mx = mouseX / (float)ofGetWidth();
     mx = ofClamp(mx, 0,1);
@@ -295,7 +318,7 @@ void ofApp::draw(){
 
      shader.end();
      mTexture.unbind();
-*/
+
     
     if (editorVisible) {
         editor.draw();
@@ -314,10 +337,10 @@ void ofApp::draw(){
 
     
     ofPushMatrix();	//Store the coordinate system
-    ofTranslate( ofGetWidth()/8, 0, ofGetHeight()/8.0);
+    ofTranslate( 0.0, 0, 0.5);
     float time = ofGetElapsedTimef();	//Get time in seconds
     float angle = time * 10;			//Compute angle. We rotate at speed 10 degrees per second
-    ofRotate(angle, 0, 1, 0 );
+    ofRotate(1, 0, 1, 0 );
     ofColor centerColor = ofColor(85, 78, 68);
     ofColor edgeColor(0, 0, 0);
     //ofBackgroundGradient(centerColor, edgeColor, OF_GRADIENT_CIRCULAR);

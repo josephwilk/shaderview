@@ -27,7 +27,7 @@ class ofApp : public ofBaseApp{
     ofxEasyFft fft;
     int plotHeight, bufferSize, w,h;
     ofFbo fbo;
-    
+    vector<ofVec3f> offsets;
     ofImage image;
     
     ofxPostProcessing post;
