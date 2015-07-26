@@ -117,7 +117,9 @@ void ofApp::draw(){
     shader.begin();
 
     float mx = mouseX / (float)ofGetWidth();
+    mx = ofClamp(mx, 0,1);
     float my = mouseY / (float)ofGetHeight();
+    my = ofClamp(my, 0,1);
     shader.setUniform2f("iMouse", mx, my);
 
     shader.setUniform1f("iGlobalTime", ofGetElapsedTimef() );
