@@ -116,8 +116,8 @@ void ofApp::draw(){
     mTexture.bind();
     shader.begin();
 
-    float mx = mouseX;
-    float my = mouseY;
+    float mx = mouseX / (float)ofGetWidth();
+    float my = mouseY / (float)ofGetHeight();
     shader.setUniform2f("iMouse", mx, my);
 
     shader.setUniform1f("iGlobalTime", ofGetElapsedTimef() );
