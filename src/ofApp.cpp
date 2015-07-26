@@ -16,7 +16,8 @@ void ofApp::setup(){
                             uniform mat4 modelViewProjectionMatrix;
                             
                             void main(){
-                                gl_Position = gl_Vertex * gl_ModelViewProjectionMatrix;
+                                vec4 pos = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
+                                gl_Position = pos;
                                 gl_TexCoord[0] = gl_MultiTexCoord0;
                                 gl_FrontColor = gl_Color;
                             }
@@ -28,7 +29,7 @@ void ofApp::setup(){
     editor.update();
     
 	shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(ofToDataPath(mainFrag, true)));
-    //shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
+    shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
     shader.linkProgram();
     
     receiver.setup(listeningOnPort);
@@ -83,7 +84,7 @@ void ofApp::update(){
     if(isShaderDirty){
         string oldShader = shader.getShaderSource(GL_FRAGMENT_SHADER);
         bool r = shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(ofToDataPath(mainFrag, true)));
-        //shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
+        shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
         if(!r){
             shader.setupShaderFromSource(GL_FRAGMENT_SHADER, oldShader);
             shaderErrored = true;
