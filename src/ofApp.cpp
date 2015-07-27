@@ -341,7 +341,7 @@ void ofApp::draw(){
 
     easyCam.begin();
     ofPushMatrix();	//Store the coordinate system
-    ofTranslate( 0.0, 0, 0.5);
+    ofTranslate( -(ofGetWidth()/2), -(ofGetHeight()/2), ofGetWidth()/ofGetHeight());
     float time = ofGetElapsedTimef();	//Get time in seconds
     float angle = time * 10;			//Compute angle. We rotate at speed 10 degrees per second
     ofRotate(1, 0, 1, 0 );
