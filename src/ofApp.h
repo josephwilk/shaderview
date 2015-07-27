@@ -43,6 +43,8 @@ class ofApp : public ofBaseApp{
     bool shaderErrored;
     bool showFreqGraph;
     int listeningOnPort;
+    
+    ofEasyCam easyCam;
    
     
 public:

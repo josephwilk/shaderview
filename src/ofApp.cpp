@@ -159,7 +159,7 @@ void ofApp::setup(){
     
     
     testMesh.setMode(OF_PRIMITIVE_POINTS);
-    float intensityThreshold = 150.0;
+    float intensityThreshold = 200.0;
     int w = image.getWidth();
     int h = image.getHeight();
     for (int x=0; x<w; ++x) {
@@ -248,8 +248,8 @@ void ofApp::update(){
         ofVec3f vert = testMesh.getVertex(i);
         
         float time = ofGetElapsedTimef();
-        float timeScale = 0.0;
-        float displacementScale = 0.75;
+        float timeScale = 5.0;
+        float displacementScale = 2.0;
         ofVec3f timeOffsets = offsets[i];
         
         // A typical design pattern for using Perlin noise uses a couple parameters:
@@ -260,9 +260,16 @@ void ofApp::update(){
         //     ofSignedNoise(time)*displacementScale allows us to change the bounds of the noise from [-1, 1] to whatever we want
         // Combine all of those parameters together, and you've got some nice control over your noise
         
-        vert.x += (ofSignedNoise(time*timeScale+timeOffsets.x)) * displacementScale;
-        vert.y += (ofSignedNoise(time*timeScale+timeOffsets.y)) * displacementScale;
-        vert.z += (ofSignedNoise(time*timeScale+timeOffsets.z)) * displacementScale;
+        //vert.x += (ofSignedNoise(time*timeScale+timeOffsets.x)) * displacementScale;
+        
+        if(i % 3 == 0){
+        if(fft.getAudio()[i%512] < 0.3 || fft.getAudio()[i%512] > 0.3){
+            vert.x += (fft.getAudio()[((i)%512)] * displacementScale);
+            vert.y += (fft.getAudio()[((i)%512)] * displacementScale);
+            vert.z += (fft.getAudio()[((i)%512)] * displacementScale);
+        }
+        }
+        //vert.z += (ofSignedNoise(time*timeScale+timeOffsets.z)) * displacementScale;
         testMesh.setVertex(i, vert);
     }
 }
@@ -314,10 +321,7 @@ void ofApp::draw(){
     glTexCoord2f(0,1); glVertex3f(0,ofGetHeight(),0);
     glEnd();
     
-    shader.setGeometryOutputCount(1024);
-
-     shader.end();
-     mTexture.unbind();
+    //shader.setGeometryOutputCount(1024);
 
     
     if (editorVisible) {
@@ -335,21 +339,24 @@ void ofApp::draw(){
     ofDrawBitmapString(msg, ofGetWidth()-80, ofGetHeight()-20, 0);
 
 
-    
+    easyCam.begin();
     ofPushMatrix();	//Store the coordinate system
     ofTranslate( 0.0, 0, 0.5);
     float time = ofGetElapsedTimef();	//Get time in seconds
     float angle = time * 10;			//Compute angle. We rotate at speed 10 degrees per second
     ofRotate(1, 0, 1, 0 );
-    ofColor centerColor = ofColor(85, 78, 68);
-    ofColor edgeColor(0, 0, 0);
+    //ofColor centerColor = ofColor(85, 78, 68);
+    //ofColor edgeColor(0, 0, 0);
     //ofBackgroundGradient(centerColor, edgeColor, OF_GRADIENT_CIRCULAR);
     testMesh.draw();
     ofPopMatrix();
+    easyCam.end();
 
-
+    shader.end();
+    mTexture.unbind();
     
     fbo.end();
+    
     fbo.draw(0,0,ofGetWidth(), ofGetHeight());
 }
 
