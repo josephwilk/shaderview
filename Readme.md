@@ -1,4 +1,4 @@
-![screenshot 2015-07-28 18 41 49](https://cloud.githubusercontent.com/assets/9792/8937414/7f167de6-3558-11e5-91a5-04bec0620b02.png)
+![screenshot 2015-07-28 18 41 49](https://cloud.githubusercontent.com/assets/9792/8938008/2bacab68-355c-11e5-899a-dcd90928be12.png)
 
 Mad scrawlings of thoughts and ideas. Work in progress. Unstable.
 
