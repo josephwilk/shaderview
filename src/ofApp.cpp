@@ -5,20 +5,26 @@ void ofApp::setup(){
     listeningOnPort = 9177;
     shaderErrored = false;
     showFreqGraph = false;
+    beatHit = 0.0;
     ofDisableArbTex();
+    meshing = true;
+    orbiting = true;
     
-	shader.setGeometryInputType(GL_TRIANGLES);
-	shader.setGeometryOutputType(GL_TRIANGLES);
-	shader.setGeometryOutputCount(4);
+//	shader.setGeometryInputType(GL_TRIANGLES);
+//	shader.setGeometryOutputType(GL_TRIANGLES);
+//	shader.setGeometryOutputCount(10);
 
+
+    
     
 //bool succ = image.loadImage("/Users/josephwilk/Desktop/hs-2006-17-c-xlarge_web.jpg");
     //bool succ = image.loadImage("/Users/josephwilk/Dropbox/Screenshots/Screenshot 2015-07-26 20.09.55.png");
     
     bool succ = image.loadImage("/Users/josephwilk/Dropbox/Screenshots/Screenshot 2015-07-26 21.12.43.png");
+  
+ //     bool succ = image.loadImage("/Users/josephwilk/Dropbox/Screenshots/Screenshot 2015-07-28 18.37.30.png");
     
-    
-    image.resize(image.getWidth()*0.4, image.getHeight()*0.4);
+    image.resize(image.getWidth()*0.25, image.getHeight()*0.25);
     editor.addCommand('a', this, &ofApp::toggleEditor);
     
     mainFrag    = "nil.glsl";
@@ -26,8 +32,8 @@ void ofApp::setup(){
    
     defaultVert = STRINGIFY(
                             uniform mat4 modelViewProjectionMatrix;
-                            uniform float phase = 0.0;		//Phase for "sin" function
-                            uniform float distortAmount = 0.25; 	//Amount of distortion
+                            uniform float phase = 0.5;		//Phase for "sin" function
+                            uniform float distortAmount = 1.0; 	//Amount of distortion
                             uniform sampler2D iChannel0;
                             
                             void main(){
@@ -46,10 +52,9 @@ void ofApp::setup(){
                                  v.z /= 1.0 + distort;
                                  */
                                 //Set output vertex position
-                                vec4 posHomog = vec4( v, 1.0 );
-                                gl_Position = gl_ModelViewProjectionMatrix * posHomog;
-                                
-                                //Set output texture coordinate and color in a standard way
+                                //vec4 posHomog = vec4( v, 1.0 );
+                                vec4 pos = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;
+                                gl_Position = pos;
                                 gl_TexCoord[0] = gl_MultiTexCoord0;
                                 gl_FrontColor = gl_Color;                            }
     );
@@ -59,31 +64,31 @@ void ofApp::setup(){
     
     defaultGeom = STRINGIFY(
                                    // get the variables for speed and phase (mousex and mousey)
-                                   uniform float phase = 0.0;		//Phase for "sin" function
-                                   uniform float distortAmount = 0.25; 	//Amount of distortion
+                                   uniform float phase = 0.5;		//Phase for "sin" function
+                                   uniform float distortAmount = 1.0; 	//Amount of distortion
                                    //the geometry shader has been set to recieve triangles
                                    //therefor it has three points to work with
                                    uniform sampler2D iChannel0;
                                    void main(void)
     {
-        vec3 p0 = gl_PositionIn[0].xyz;
-        vec3 p1 = gl_PositionIn[1].xyz;
-        vec3 p2 = gl_PositionIn[2].xyz;
-        vec3 dir0 = p1 - p0;
-        vec3 dir1 = p2 - p1;
+//        vec3 p0 = gl_PositionIn[0].xyz;
+//        vec3 p1 = gl_PositionIn[1].xyz;
+//        vec3 p2 = gl_PositionIn[2].xyz;
+//        vec3 dir0 = p1 - p0;
+//        vec3 dir1 = p2 - p1;
         
         //	find the normal of the face (direction it is facing)
-        vec3 N = normalize(cross(dir1,dir0));
+//        vec3 N = normalize(cross(dir1,dir0));
         
-        float boomx = smoothstep(0.0,1.0, texture2D(iChannel0, vec2(0.0,p0.y)).x);
-        float boomy = smoothstep(0.0,1.0, texture2D(iChannel0, vec2(0.0,p0.y)).x);
+//        float boomx = smoothstep(0.0,1.0, texture2D(iChannel0, vec2(0.0,p0.y)).x);
+//        float boomy = smoothstep(0.0,1.0, texture2D(iChannel0, vec2(0.0,p0.y)).x);
 
-        float distort = distortAmount * sin( phase + 0.01 * p0.y ); //deform along y axis
+//        float distort = distortAmount * sin( phase + 0.01 * p0.y ); //deform along y axis
         
 		//Move the position
-        N.x /= 1.0 + distort +boomx;
-        N.y /= 1.0 + distort + boomy;
-        N.z /= 1.0 + distort;
+//        N.x /= 1.0 + distort +boomx;
+//        N.y /= 1.0 + distort + boomy;
+//        N.z /= 1.0 + distort;
         
         //uncomment this section if you would like the deformation to be along two axis instead of just one.
         /*
@@ -94,10 +99,10 @@ void ofApp::setup(){
          N.z /= 1.0 + distort2;
          */ 
 		//remember there are three points to be moved
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 2; i++)
         {
-            gl_Position = gl_PositionIn[i] + vec4(50*N, 0.0);
-            EmitVertex();
+        gl_Position = gl_PositionIn[i];
+        EmitVertex();
         }
         
         EndPrimitive();
@@ -110,26 +115,16 @@ void ofApp::setup(){
     
     editor.loadFile(ofToDataPath(mainFrag, true), 1);
     editor.update();
-    
-    shader.setGeometryInputType(GL_TRIANGLES);
-	shader.setGeometryOutputType(GL_TRIANGLES);
-	shader.setGeometryOutputCount(4);
-    
+   
 	shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(ofToDataPath(mainFrag, true)));
-    //shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
+    shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
     //shader.setupShaderFromSource(GL_GEOMETRY_SHADER, defaultGeom);
     shader.linkProgram();
     
-    
     ofSetFrameRate(60);
-    testMesh.setMode(OF_PRIMITIVE_POINTS);
-
-    
+  
     receiver.setup(listeningOnPort);
     ofAddListener(receiver.onMessageReceived, this, &ofApp::onMessageReceived);
-    
-  //  ofSetVerticalSync(true);
- //   ofSetFrameRate(60);
 
     mTexture.allocate(512,2,GL_LUMINANCE, false);
    
@@ -147,19 +142,9 @@ void ofApp::setup(){
     post.createPass<LimbDarkeningPass>()->setEnabled(false);
     post.createPass<RGBShiftPass>()->setEnabled(false);
     
-    //sphere.setRadius(300.0);
-	// this sets resolution of 'sphere'.
-	// if this were an ofIcoSphere then a number such as 2-4 is appropriate
-	//sphere.setResolution(25);
-	
-	// this turns the sphere into a triangle mesh made up of the faces.
-	//triangles = sphere.getMesh().getUniqueFaces();
-	//testMesh.setFromTriangles(triangles);
-    
-    
-    
     testMesh.setMode(OF_PRIMITIVE_POINTS);
-    float intensityThreshold = 200.0;
+    float intensityThreshold = 255.0;
+    int noise = 10;
     int w = image.getWidth();
     int h = image.getHeight();
     for (int x=0; x<w; ++x) {
@@ -169,7 +154,7 @@ void ofApp::setup(){
             if (intensity >= intensityThreshold) {
                 float saturation = c.getSaturation();
                 float z = ofMap(saturation, 0, 255, -100, 100);
-                ofVec3f pos(4*x, 4*y, z);
+                ofVec3f pos((4*x)+ofRandom(0-noise,noise), (4*y)+ofRandom(0-noise,noise), z+ofRandom(0-noise,noise));
                 testMesh.addVertex(pos);
                 testMesh.addColor(c);
                 offsets.push_back(ofVec3f(ofRandom(0,100000), ofRandom(0,100000), ofRandom(0,100000)));
@@ -177,7 +162,7 @@ void ofApp::setup(){
         }
     }
     
-    
+    testMesh.enableColors();
     testMesh.setMode(OF_PRIMITIVE_LINES);
     
     float connectionDistance = 30;
@@ -194,6 +179,18 @@ void ofApp::setup(){
         }
     }
     
+    origMesh = testMesh;
+    //testMesh.mergeDuplicateVertices();
+    
+    meshCentroid = testMesh.getCentroid();
+    
+    for (int i=0; i<numVerts; ++i) {
+        ofVec3f vert = testMesh.getVertex(i);
+        float distance = vert.distance(meshCentroid);
+        float angle = atan2(vert.y-meshCentroid.y, vert.x-meshCentroid.x);
+        distances.push_back(distance);
+        angles.push_back(angle);
+    }
     
     isShaderDirty = true;
     watcher.registerAllEvents(this);
@@ -222,15 +219,11 @@ void ofApp::update(){
     }
     mTexture.loadData(signal, 512, 2, GL_LUMINANCE);
 
-    if(false){
-        shader.setGeometryInputType(GL_TRIANGLES);
-        shader.setGeometryOutputType(GL_TRIANGLES);
-        shader.setGeometryOutputCount(4);
-
+    if(isShaderDirty == true){
         string oldShader = shader.getShaderSource(GL_FRAGMENT_SHADER);
         bool r = shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(ofToDataPath(mainFrag, true)));
         shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
-        shader.setupShaderFromSource(GL_GEOMETRY_SHADER, defaultGeom);
+        //shader.setupShaderFromSource(GL_GEOMETRY_SHADER, defaultGeom);
 
         if(!r){
             shader.setupShaderFromSource(GL_FRAGMENT_SHADER, oldShader);
@@ -243,40 +236,93 @@ void ofApp::update(){
         isShaderDirty = false;
     }
     
+    if(meshing == true){
+    
     int numVerts = testMesh.getNumVertices();
+    float bumpFactor = beatHit;
     for (int i=0; i<numVerts; ++i) {
         ofVec3f vert = testMesh.getVertex(i);
+        ofVec3f vertbck = origMesh.getVertex(i);
         
         float time = ofGetElapsedTimef();
         float timeScale = 5.0;
         float displacementScale = 2.0;
         ofVec3f timeOffsets = offsets[i];
-        
-        // A typical design pattern for using Perlin noise uses a couple parameters:
-        // ofSignedNoise(time*timeScale+timeOffset)*displacementScale
-        //     ofSignedNoise(time) gives us noise values that change smoothly over time
-        //     ofSignedNoise(time*timeScale) allows us to control the smoothness of our noise (smaller timeScale, smoother values)
-        //     ofSignedNoise(time+timeOffset) allows us to use the same Perlin noise function to control multiple things and have them look as if they are moving independently
-        //     ofSignedNoise(time)*displacementScale allows us to change the bounds of the noise from [-1, 1] to whatever we want
-        // Combine all of those parameters together, and you've got some nice control over your noise
-        
         //vert.x += (ofSignedNoise(time*timeScale+timeOffsets.x)) * displacementScale;
         
-        if(i % 3 == 0){
-        if(fft.getAudio()[i%512] < 0.3 || fft.getAudio()[i%512] > 0.3){
-            vert.x += (fft.getAudio()[((i)%512)] * displacementScale);
-            vert.y += (fft.getAudio()[((i)%512)] * displacementScale);
-            vert.z += (fft.getAudio()[((i)%512)] * displacementScale);
+        int effected = 3;
+        //int fftKey = ofMap(i, 0, numVerts, 0, 511);
+        int fftKey = i%512;
+        
+        if (fft.getAudio()[fftKey] > 0.8){
+            effected = 2;
+        }
+        if (fft.getAudio()[fftKey] > 0.9){
+            effected = 1;
+        }
+        
+        if(i % effected == 0){
+            if(fft.getAudio()[fftKey] < 0.3 || fft.getAudio()[fftKey] > 0.3){
+                vert.x += (fft.getAudio()[fftKey] * displacementScale);
+                vert.y += (fft.getAudio()[fftKey] * displacementScale);
+                vert.z += (fft.getAudio()[fftKey] * displacementScale);
+            }
+        }
+
+/*
+        if(i % effected == 0){
+        if(bumpFactor == 1.0){
+            vert.x +=  ofSignedNoise(time*timeScale+timeOffsets.x)*2.0;
+            vert.y +=  ofSignedNoise(time*timeScale+timeOffsets.x)*2.0;
+        }
+        else if(vert.x > vertbck.x){
+            vert.x -= 0.1;
+            vert.y -= 0.1;
+        }
+        else{
+            vert.x = vertbck.x;
+            vert.y = vertbck.y;
         }
         }
-        //vert.z += (ofSignedNoise(time*timeScale+timeOffsets.z)) * displacementScale;
+*/
         testMesh.setVertex(i, vert);
     }
+    }
+    
+    if (false) {
+        int numVerts = testMesh.getNumVertices();
+        for (int i=0; i<numVerts; ++i) {
+            ofVec3f vert = testMesh.getVertex(i);
+            float distance = distances[i];
+            float angle = angles[i];
+            float elapsedTime = ofGetElapsedTimef() - startOrbitTime;
+            
+            // Lets adjust the speed of the orbits such that things that are closer to
+            // the center rotate faster than things that are more distant
+            float speed = ofMap(distance, 0, ofGetElapsedTimef()*100, 0.2, 0.001, true);
+            
+            // To find the angular rotation of our vertex, we use the current time and
+            // the starting angular rotation
+            float rotatedAngle = elapsedTime * speed + angle;
+            
+            // Remember that our distances are calculated relative to the centroid of the mesh, so
+            // we need to shift everything back to screen coordinates by adding the x and y of the centroid
+            vert.x = distance * cos(rotatedAngle) + meshCentroid.x;
+            vert.y = distance * sin(rotatedAngle) + meshCentroid.y;
+            
+            vert.x +=  ofSignedNoise(ofGetElapsedTimef()*0.1)*2.0;
+            vert.y +=  ofSignedNoise(ofGetElapsedTimef()*0.1)*2.0;
+
+            
+            testMesh.setVertex(i, vert);
+        }
+    }
+    
 }
 
 void ofApp::draw(){
     fbo.begin();
-
+    //ofBackground(0, 0, 0);
     //ofEnableDepthTest();				//Enable z-buffering
     
 	//Set a gradient background from white to gray
@@ -299,7 +345,7 @@ void ofApp::draw(){
     
     mTexture.bind();
     shader.begin();
-
+   
     float mx = mouseX / (float)ofGetWidth();
     mx = ofClamp(mx, 0,1);
     float my = mouseY / (float)ofGetHeight();
@@ -309,6 +355,14 @@ void ofApp::draw(){
     shader.setUniform1f("iGlobalTime", ofGetElapsedTimef() );
     shader.setUniform3f("iResolution", ofGetWidth() , ofGetHeight(), 1) ;
     shader.setUniform1f("iVolume", currentAmp) ;
+    
+    if(meshing){
+        shader.setUniform1f("iMesh", 1.0);
+    }
+    else{
+        shader.setUniform1f("iMesh", 0.0);
+    }
+    
     for(auto const &it1 : uniforms) {
         shader.setUniform1f(it1.first, uniforms[it1.first]);
     }
@@ -339,19 +393,24 @@ void ofApp::draw(){
     ofDrawBitmapString(msg, ofGetWidth()-80, ofGetHeight()-20, 0);
 
 
-    easyCam.begin();
+
+    if(meshing){
+     //   easyCam.begin();
     ofPushMatrix();	//Store the coordinate system
-    ofTranslate( -(ofGetWidth()/2), -(ofGetHeight()/2), ofGetWidth()/ofGetHeight());
+//    ofTranslate( (ofGetWidth()/4.0)-350, (ofGetHeight()/4.0)-100, 0);
+
+    ofTranslate( 0 , 0, 0);
     float time = ofGetElapsedTimef();	//Get time in seconds
     float angle = time * 10;			//Compute angle. We rotate at speed 10 degrees per second
     ofRotate(1, 0, 1, 0 );
     //ofColor centerColor = ofColor(85, 78, 68);
     //ofColor edgeColor(0, 0, 0);
     //ofBackgroundGradient(centerColor, edgeColor, OF_GRADIENT_CIRCULAR);
+
     testMesh.draw();
     ofPopMatrix();
-    easyCam.end();
-
+   // easyCam.end();
+    }
     shader.end();
     mTexture.unbind();
     
@@ -414,6 +473,12 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
 
         mainFrag = shaderFile;
         isShaderDirty = true;
+    }
+    if(addr == "/beat"){
+        beatHit = msg.getArgAsFloat(0);
+    }
+    if(addr == "/mesh"){
+        meshing = false;
     }
 
 }

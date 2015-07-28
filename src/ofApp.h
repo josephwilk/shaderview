@@ -10,14 +10,15 @@
 
 class ofApp : public ofBaseApp{
    
-    //vector to hold all triangles
-	vector<ofMeshFace> triangles;
-	//mesh to hold triangles for drawing as a single unit
 	ofMesh testMesh;
-    //traditional sphere primitive which will look like strips
-	ofSpherePrimitive sphere;
-    string defaultGeom;
+	ofMesh origMesh;
+    ofVec3f meshCentroid;
+    vector<float> distances;
+    vector<float> angles;
+    float startOrbitTime;
     
+    string defaultGeom;
+
     map<string, float> uniforms;
     
     ofx::IO::DirectoryWatcherManager watcher;
@@ -30,8 +31,11 @@ class ofApp : public ofBaseApp{
     vector<ofVec3f> offsets;
     ofImage image;
     
+    float beatHit;
+    bool orbiting;
+    bool meshing;
+    
     ofxPostProcessing post;
-
     ofxOscReceiver receiver;
     
     string defaultVert;
