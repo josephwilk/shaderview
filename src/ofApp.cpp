@@ -8,7 +8,7 @@ void ofApp::setup(){
     beatHit = 0.0;
     ofDisableArbTex();
     meshing = true;
-    orbiting = true;
+    orbiting = false;
     
     string filename = "Screenshot 2015-07-26 21.12.43";
     bool succ = image.loadImage("/Users/josephwilk/Dropbox/Screenshots/"+filename+".png");
@@ -228,81 +228,76 @@ void ofApp::update(){
     }
     
     if(meshing == true){
-    
-    int numVerts = generativeMesh.getNumVertices();
-    float bumpFactor = beatHit;
-    for (int i=0; i<numVerts; ++i) {
-        ofVec3f vert = generativeMesh.getVertex(i);
-        ofVec3f vertbck = origMesh.getVertex(i);
         
-        float time = ofGetElapsedTimef();
-        float timeScale = 5.0;
-        float displacementScale = 2.0;
-        ofVec3f timeOffsets = offsets[i];
-        //vert.x += (ofSignedNoise(time*timeScale+timeOffsets.x)) * displacementScale;
-        
-        int effected = 3;
-        //int fftKey = ofMap(i, 0, numVerts, 0, 511);
-        int fftKey = i%512;
-        
-        if (fft.getAudio()[fftKey] > 0.8){
-            effected = 2;
-        }
-        if (fft.getAudio()[fftKey] > 0.9){
-            effected = 1;
-        }
-        
-        if(i % effected == 0){
-            if(fft.getAudio()[fftKey] < 0.3 || fft.getAudio()[fftKey] > 0.3){
-                vert.x += (fft.getAudio()[fftKey] * displacementScale);
-                vert.y += (fft.getAudio()[fftKey] * displacementScale);
-                vert.z += (fft.getAudio()[fftKey] * displacementScale);
+        int numVerts = generativeMesh.getNumVertices();
+        float bumpFactor = beatHit;
+        for (int i=0; i<numVerts; ++i) {
+            ofVec3f vert = generativeMesh.getVertex(i);
+            ofVec3f vertbck = origMesh.getVertex(i);
+            
+            float time = ofGetElapsedTimef();
+            float timeScale = 5.0;
+            float displacementScale = 2.0;
+            ofVec3f timeOffsets = offsets[i];
+            //vert.x += (ofSignedNoise(time*timeScale+timeOffsets.x)) * displacementScale;
+            
+            int effected = 3;
+            //int fftKey = ofMap(i, 0, numVerts, 0, 511);
+            int fftKey = i%512;
+            
+            if (fft.getAudio()[fftKey] > 0.8){
+                effected = 2;
             }
+            if (fft.getAudio()[fftKey] > 0.9){
+                effected = 1;
+            }
+            
+            if(i % effected == 0){
+                if(fft.getAudio()[fftKey] < 0.3 || fft.getAudio()[fftKey] > 0.3){
+                    vert.x += (fft.getAudio()[fftKey] * displacementScale);
+                    vert.y += (fft.getAudio()[fftKey] * displacementScale);
+                    vert.z += (fft.getAudio()[fftKey] * displacementScale);
+                }
+            }
+            
+            /*
+             if(i % effected == 0){
+             if(bumpFactor == 1.0){
+             vert.x +=  ofSignedNoise(time*timeScale+timeOffsets.x)*2.0;
+             vert.y +=  ofSignedNoise(time*timeScale+timeOffsets.x)*2.0;
+             }
+             else if(vert.x > vertbck.x){
+             vert.x -= 0.1;
+             vert.y -= 0.1;
+             }
+             else{
+             vert.x = vertbck.x;
+             vert.y = vertbck.y;
+             }
+             }
+             */
+            generativeMesh.setVertex(i, vert);
         }
-
-/*
-        if(i % effected == 0){
-        if(bumpFactor == 1.0){
-            vert.x +=  ofSignedNoise(time*timeScale+timeOffsets.x)*2.0;
-            vert.y +=  ofSignedNoise(time*timeScale+timeOffsets.x)*2.0;
-        }
-        else if(vert.x > vertbck.x){
-            vert.x -= 0.1;
-            vert.y -= 0.1;
-        }
-        else{
-            vert.x = vertbck.x;
-            vert.y = vertbck.y;
-        }
-        }
-*/
-        generativeMesh.setVertex(i, vert);
-    }
     }
     
-    if (false) {
+    if (orbiting) {
         int numVerts = generativeMesh.getNumVertices();
         for (int i=0; i<numVerts; ++i) {
             ofVec3f vert = generativeMesh.getVertex(i);
             float distance = distances[i];
             float angle = angles[i];
             float elapsedTime = ofGetElapsedTimef() - startOrbitTime;
-            
-            // Lets adjust the speed of the orbits such that things that are closer to
-            // the center rotate faster than things that are more distant
-            float speed = ofMap(distance, 0, ofGetElapsedTimef()*100, 0.2, 0.001, true);
-            
-            // To find the angular rotation of our vertex, we use the current time and
-            // the starting angular rotation
+            ofVec3f timeOffsets = offsets[i];
+            float speed = ofMap(distance, 0, ofGetElapsedTimef(), 0.0, (elapsedTime*0.00000001)*timeOffsets.x, true);
+
             float rotatedAngle = elapsedTime * speed + angle;
             
-            // Remember that our distances are calculated relative to the centroid of the mesh, so
-            // we need to shift everything back to screen coordinates by adding the x and y of the centroid
             vert.x = distance * cos(rotatedAngle) + meshCentroid.x;
             vert.y = distance * sin(rotatedAngle) + meshCentroid.y;
             
-            vert.x +=  ofSignedNoise(ofGetElapsedTimef()*0.1)*2.0;
-            vert.y +=  ofSignedNoise(ofGetElapsedTimef()*0.1)*2.0;
+
+//            vert.x +=  ofSignedNoise(timeOffsets.x*elapsedTime)*2.0;
+  //          vert.y +=  ofSignedNoise(timeOffsets.y*elapsedTime)*2.0;
 
             
             generativeMesh.setVertex(i, vert);
@@ -314,12 +309,7 @@ void ofApp::update(){
 void ofApp::draw(){
     fbo.begin();
     //ofBackground(0, 0, 0);
-    //ofEnableDepthTest();				//Enable z-buffering
-    
-	//Set a gradient background from white to gray
-	//for adding an illusion of visual depth to the scene
-	//ofBackgroundGradient( ofColor( 255 ), ofColor( 128 ) );
-    
+
     if(showFreqGraph){
         ofBackground(0, 0, 0);
         ofPushMatrix();
@@ -365,9 +355,6 @@ void ofApp::draw(){
     glTexCoord2f(1,1); glVertex3f(ofGetWidth(),ofGetHeight(),0);
     glTexCoord2f(0,1); glVertex3f(0,ofGetHeight(),0);
     glEnd();
-    
-    //shader.setGeometryOutputCount(1024);
-
     
     if (editorVisible) {
         editor.draw();
