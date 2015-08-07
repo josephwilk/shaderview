@@ -10,19 +10,14 @@ void ofApp::setup(){
     meshing = true;
     orbiting = true;
     
-//	shader.setGeometryInputType(GL_TRIANGLES);
-//	shader.setGeometryOutputType(GL_TRIANGLES);
-//	shader.setGeometryOutputCount(10);
-
-
-    
-    
-//bool succ = image.loadImage("/Users/josephwilk/Desktop/hs-2006-17-c-xlarge_web.jpg");
+    //shader.setGeometryInputType(GL_TRIANGLES);
+    //shader.setGeometryOutputType(GL_TRIANGLES);
+    //shader.setGeometryOutputCount(10);
+    //bool succ = image.loadImage("/Users/josephwilk/Desktop/hs-2006-17-c-xlarge_web.jpg");
     //bool succ = image.loadImage("/Users/josephwilk/Dropbox/Screenshots/Screenshot 2015-07-26 20.09.55.png");
-    
-    bool succ = image.loadImage("/Users/josephwilk/Dropbox/Screenshots/Screenshot 2015-07-26 21.12.43.png");
-  
- //     bool succ = image.loadImage("/Users/josephwilk/Dropbox/Screenshots/Screenshot 2015-07-28 18.37.30.png");
+    string filename = "Screenshot 2015-07-26 21.12.43";
+    bool succ = image.loadImage("/Users/josephwilk/Dropbox/Screenshots/"+filename+".png");
+    image.mirror(true, false);
     
     image.resize(image.getWidth()*0.25, image.getHeight()*0.25);
     editor.addCommand('a', this, &ofApp::toggleEditor);
@@ -143,8 +138,9 @@ void ofApp::setup(){
     post.createPass<RGBShiftPass>()->setEnabled(false);
     
     testMesh.setMode(OF_PRIMITIVE_POINTS);
-    float intensityThreshold = 255.0;
+    float intensityThreshold = 250.0;
     int noise = 10;
+    float stretch = 0.25;
     int w = image.getWidth();
     int h = image.getHeight();
     for (int x=0; x<w; ++x) {
@@ -154,7 +150,7 @@ void ofApp::setup(){
             if (intensity >= intensityThreshold) {
                 float saturation = c.getSaturation();
                 float z = ofMap(saturation, 0, 255, -100, 100);
-                ofVec3f pos((4*x)+ofRandom(0-noise,noise), (4*y)+ofRandom(0-noise,noise), z+ofRandom(0-noise,noise));
+                ofVec3f pos((x/stretch)+ofRandom(0-noise,noise), (y/stretch)+ofRandom(0-noise,noise), z+ofRandom(0-noise,noise));
                 testMesh.addVertex(pos);
                 testMesh.addColor(c);
                 offsets.push_back(ofVec3f(ofRandom(0,100000), ofRandom(0,100000), ofRandom(0,100000)));
@@ -395,22 +391,22 @@ void ofApp::draw(){
 
 
     if(meshing){
-     //   easyCam.begin();
-    ofPushMatrix();	//Store the coordinate system
-//    ofTranslate( (ofGetWidth()/4.0)-350, (ofGetHeight()/4.0)-100, 0);
+        //easyCam.begin();
+        ofPushMatrix();	//Store the coordinate system
+        ofTranslate((ofGetWidth()/2)-440.0, (ofGetHeight()/2.0)-210.0);
+        
+        float time = ofGetElapsedTimef();	//Get time in seconds
+        float angle = time * 10;			//Compute angle. We rotate at speed 10 degrees per second
+        ofRotate(1, 0, 1, 0 );
+        //ofColor centerColor = ofColor(85, 78, 68);
+        //ofColor edgeColor(0, 0, 0);
+     //ofBackgroundGradient(centerColor, edgeColor, OF_GRADIENT_CIRCULAR);
 
-    ofTranslate( 0 , 0, 0);
-    float time = ofGetElapsedTimef();	//Get time in seconds
-    float angle = time * 10;			//Compute angle. We rotate at speed 10 degrees per second
-    ofRotate(1, 0, 1, 0 );
-    //ofColor centerColor = ofColor(85, 78, 68);
-    //ofColor edgeColor(0, 0, 0);
-    //ofBackgroundGradient(centerColor, edgeColor, OF_GRADIENT_CIRCULAR);
-
-    testMesh.draw();
-    ofPopMatrix();
-   // easyCam.end();
+        testMesh.draw();
+        ofPopMatrix();
+        // easyCam.end();
     }
+
     shader.end();
     mTexture.unbind();
     
@@ -478,7 +474,13 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
         beatHit = msg.getArgAsFloat(0);
     }
     if(addr == "/mesh"){
-        meshing = false;
+        float flag = msg.getArgAsFloat(0);
+        if(flag <= 0.0){
+            meshing = false;
+        }
+        else{
+            meshing = true;
+        }
     }
 
 }
