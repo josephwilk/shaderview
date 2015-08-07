@@ -10,7 +10,7 @@
 
 class ofApp : public ofBaseApp{
    
-	ofMesh testMesh;
+	ofMesh generativeMesh;
 	ofMesh origMesh;
     ofVec3f meshCentroid;
     vector<float> distances;

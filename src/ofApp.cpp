@@ -10,16 +10,11 @@ void ofApp::setup(){
     meshing = true;
     orbiting = true;
     
-    //shader.setGeometryInputType(GL_TRIANGLES);
-    //shader.setGeometryOutputType(GL_TRIANGLES);
-    //shader.setGeometryOutputCount(10);
-    //bool succ = image.loadImage("/Users/josephwilk/Desktop/hs-2006-17-c-xlarge_web.jpg");
-    //bool succ = image.loadImage("/Users/josephwilk/Dropbox/Screenshots/Screenshot 2015-07-26 20.09.55.png");
     string filename = "Screenshot 2015-07-26 21.12.43";
     bool succ = image.loadImage("/Users/josephwilk/Dropbox/Screenshots/"+filename+".png");
     image.mirror(true, false);
-    
     image.resize(image.getWidth()*0.25, image.getHeight()*0.25);
+
     editor.addCommand('a', this, &ofApp::toggleEditor);
     
     mainFrag    = "nil.glsl";
@@ -137,10 +132,10 @@ void ofApp::setup(){
     post.createPass<LimbDarkeningPass>()->setEnabled(false);
     post.createPass<RGBShiftPass>()->setEnabled(false);
     
-    testMesh.setMode(OF_PRIMITIVE_POINTS);
+    generativeMesh.setMode(OF_PRIMITIVE_POINTS);
     float intensityThreshold = 250.0;
     int noise = 10;
-    float stretch = 0.25;
+    float stretch = 4.0;
     int w = image.getWidth();
     int h = image.getHeight();
     for (int x=0; x<w; ++x) {
@@ -150,38 +145,38 @@ void ofApp::setup(){
             if (intensity >= intensityThreshold) {
                 float saturation = c.getSaturation();
                 float z = ofMap(saturation, 0, 255, -100, 100);
-                ofVec3f pos((x/stretch)+ofRandom(0-noise,noise), (y/stretch)+ofRandom(0-noise,noise), z+ofRandom(0-noise,noise));
-                testMesh.addVertex(pos);
-                testMesh.addColor(c);
+                ofVec3f pos((x*stretch)+ofRandom(0-noise,noise), (y*stretch)+ofRandom(0-noise,noise), z+ofRandom(0-noise,noise));
+                generativeMesh.addVertex(pos);
+                generativeMesh.addColor(c);
                 offsets.push_back(ofVec3f(ofRandom(0,100000), ofRandom(0,100000), ofRandom(0,100000)));
             }
         }
     }
     
-    testMesh.enableColors();
-    testMesh.setMode(OF_PRIMITIVE_LINES);
+    generativeMesh.enableColors();
+    generativeMesh.setMode(OF_PRIMITIVE_LINES);
     
     float connectionDistance = 30;
-    int numVerts = testMesh.getNumVertices();
+    int numVerts = generativeMesh.getNumVertices();
     for (int a=0; a<numVerts; ++a) {
-        ofVec3f verta = testMesh.getVertex(a);
+        ofVec3f verta = generativeMesh.getVertex(a);
         for (int b=a+1; b<numVerts; ++b) {
-            ofVec3f vertb = testMesh.getVertex(b);
+            ofVec3f vertb = generativeMesh.getVertex(b);
             float distance = verta.distance(vertb);
             if (distance <= connectionDistance) {
-                testMesh.addIndex(a);
-                testMesh.addIndex(b);
+                generativeMesh.addIndex(a);
+                generativeMesh.addIndex(b);
             }
         }
     }
     
-    origMesh = testMesh;
-    //testMesh.mergeDuplicateVertices();
+    origMesh = generativeMesh;
+    //generativeMesh.mergeDuplicateVertices();
     
-    meshCentroid = testMesh.getCentroid();
+    meshCentroid = generativeMesh.getCentroid();
     
     for (int i=0; i<numVerts; ++i) {
-        ofVec3f vert = testMesh.getVertex(i);
+        ofVec3f vert = generativeMesh.getVertex(i);
         float distance = vert.distance(meshCentroid);
         float angle = atan2(vert.y-meshCentroid.y, vert.x-meshCentroid.x);
         distances.push_back(distance);
@@ -234,10 +229,10 @@ void ofApp::update(){
     
     if(meshing == true){
     
-    int numVerts = testMesh.getNumVertices();
+    int numVerts = generativeMesh.getNumVertices();
     float bumpFactor = beatHit;
     for (int i=0; i<numVerts; ++i) {
-        ofVec3f vert = testMesh.getVertex(i);
+        ofVec3f vert = generativeMesh.getVertex(i);
         ofVec3f vertbck = origMesh.getVertex(i);
         
         float time = ofGetElapsedTimef();
@@ -281,14 +276,14 @@ void ofApp::update(){
         }
         }
 */
-        testMesh.setVertex(i, vert);
+        generativeMesh.setVertex(i, vert);
     }
     }
     
     if (false) {
-        int numVerts = testMesh.getNumVertices();
+        int numVerts = generativeMesh.getNumVertices();
         for (int i=0; i<numVerts; ++i) {
-            ofVec3f vert = testMesh.getVertex(i);
+            ofVec3f vert = generativeMesh.getVertex(i);
             float distance = distances[i];
             float angle = angles[i];
             float elapsedTime = ofGetElapsedTimef() - startOrbitTime;
@@ -310,7 +305,7 @@ void ofApp::update(){
             vert.y +=  ofSignedNoise(ofGetElapsedTimef()*0.1)*2.0;
 
             
-            testMesh.setVertex(i, vert);
+            generativeMesh.setVertex(i, vert);
         }
     }
     
@@ -388,23 +383,20 @@ void ofApp::draw(){
     string msg = ofToString((int) ofGetFrameRate()) + " fps";
     ofDrawBitmapString(msg, ofGetWidth()-80, ofGetHeight()-20, 0);
 
-
-
     if(meshing){
         //easyCam.begin();
-        ofPushMatrix();	//Store the coordinate system
-        ofTranslate((ofGetWidth()/2)-440.0, (ofGetHeight()/2.0)-210.0);
-        
-        float time = ofGetElapsedTimef();	//Get time in seconds
-        float angle = time * 10;			//Compute angle. We rotate at speed 10 degrees per second
-        ofRotate(1, 0, 1, 0 );
+        ofPushMatrix();
+        ofTranslate((ofGetWidth()/2)-image.width-205, (ofGetHeight()/2.0)-(image.height)-100);
+        //float time = ofGetElapsedTimef();	//Get time in seconds
+        //float angle = time * 10;			//Compute angle. We rotate at speed 10 degrees per second
+        ofRotate(1, 0, 1, 0);
         //ofColor centerColor = ofColor(85, 78, 68);
         //ofColor edgeColor(0, 0, 0);
-     //ofBackgroundGradient(centerColor, edgeColor, OF_GRADIENT_CIRCULAR);
+        //ofBackgroundGradient(centerColor, edgeColor, OF_GRADIENT_CIRCULAR);
 
-        testMesh.draw();
+        generativeMesh.draw();
         ofPopMatrix();
-        // easyCam.end();
+        //easyCam.end();
     }
 
     shader.end();
