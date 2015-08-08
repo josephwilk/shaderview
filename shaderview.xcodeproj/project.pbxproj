@@ -110,6 +110,7 @@
 		EB4F14C4AE3B3EFD04520383 /* DirectoryWatcher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 12A42DF3BFDE28A4818C2EC4 /* DirectoryWatcher.cpp */; };
 		EBE93261A021BCE7741047C3 /* ClipBoard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4D1B8F8AB0FA8340FD9FEA4 /* ClipBoard.cpp */; };
 		F285EB3169F1566CA3D93C20 /* ofxPanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E112B3AEBEA2C091BF2B40AE /* ofxPanel.cpp */; };
+		F3900B9C1B764B400069A18E /* particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F3900B9B1B764B400069A18E /* particle.cpp */; };
 		F4862D2A81633EF0F84109F3 /* ofxEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 15506D31F838751547E6C172 /* ofxEditor.cpp */; };
 		F953E11952BFF8C207418550 /* HexBinaryEncoding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22565CAF8FFEF25C805A438F /* HexBinaryEncoding.cpp */; };
 		FE9170FE54D704DF97B0E5BD /* COBSEncoding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4164C6C6CE5115889A99F42C /* COBSEncoding.cpp */; };
@@ -334,7 +335,7 @@
 		E45BE97A0E8CC7DD009D7055 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		E4B69B5B0A3A1756003C02F2 /* shaderviewDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = shaderviewDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4B69E1D0A3A1BDC003C02F2 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = src/main.cpp; sourceTree = SOURCE_ROOT; };
-		E4B69E1E0A3A1BDC003C02F2 /* ofApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofApp.cpp; path = src/ofApp.cpp; sourceTree = SOURCE_ROOT; };
+		E4B69E1E0A3A1BDC003C02F2 /* ofApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = ofApp.cpp; path = src/ofApp.cpp; sourceTree = SOURCE_ROOT; };
 		E4B69E1F0A3A1BDC003C02F2 /* ofApp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ofApp.h; path = src/ofApp.h; sourceTree = SOURCE_ROOT; };
 		E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "openFrameworks-Info.plist"; sourceTree = "<group>"; };
 		E4C2424410CC5A17004149E2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -361,6 +362,22 @@
 		F34A4B871B43115B00FD04C3 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		F34A4B891B43115B00FD04C3 /* fftw3f.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = fftw3f.a; sourceTree = "<group>"; };
 		F34A4B8B1B43115B00FD04C3 /* libfftw3f-3.dll */ = {isa = PBXFileReference; lastKnownFileType = file; path = "libfftw3f-3.dll"; sourceTree = "<group>"; };
+		F3900B9A1B764B390069A18E /* particle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = particle.h; sourceTree = "<group>"; };
+		F3900B9B1B764B400069A18E /* particle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = particle.cpp; sourceTree = "<group>"; };
+		F3900BAE1B764BDF0069A18E /* install.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = install.xml; sourceTree = "<group>"; };
+		F3900BB01B764BDF0069A18E /* ofxMatrix3x3.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMatrix3x3.cpp; sourceTree = "<group>"; };
+		F3900BB11B764BDF0069A18E /* ofxMatrix3x3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMatrix3x3.h; sourceTree = "<group>"; };
+		F3900BB21B764BDF0069A18E /* ofxMatrix4x4.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMatrix4x4.cpp; sourceTree = "<group>"; };
+		F3900BB31B764BDF0069A18E /* ofxMatrix4x4.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMatrix4x4.h; sourceTree = "<group>"; };
+		F3900BB41B764BDF0069A18E /* ofxPoint2f.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxPoint2f.h; sourceTree = "<group>"; };
+		F3900BB51B764BDF0069A18E /* ofxPoint3f.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxPoint3f.h; sourceTree = "<group>"; };
+		F3900BB61B764BDF0069A18E /* ofxPoint4f.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxPoint4f.h; sourceTree = "<group>"; };
+		F3900BB71B764BDF0069A18E /* ofxQuaternion.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxQuaternion.cpp; sourceTree = "<group>"; };
+		F3900BB81B764BDF0069A18E /* ofxQuaternion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxQuaternion.h; sourceTree = "<group>"; };
+		F3900BB91B764BDF0069A18E /* ofxVec2f.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxVec2f.h; sourceTree = "<group>"; };
+		F3900BBA1B764BDF0069A18E /* ofxVec3f.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxVec3f.h; sourceTree = "<group>"; };
+		F3900BBB1B764BDF0069A18E /* ofxVec4f.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxVec4f.h; sourceTree = "<group>"; };
+		F3900BBC1B764BDF0069A18E /* ofxVectorMath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxVectorMath.h; sourceTree = "<group>"; };
 		F399B91E98DC31CDA6DDACB4 /* ofxTCPManager.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxTCPManager.cpp; path = ../../../addons/ofxNetwork/src/ofxTCPManager.cpp; sourceTree = SOURCE_ROOT; };
 		F4030B6B8EDE26878C8D74F1 /* ByteBufferWriter.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ByteBufferWriter.h; path = ../../../addons/ofxIO/libs/ofxIO/include/ofx/IO/ByteBufferWriter.h; sourceTree = SOURCE_ROOT; };
 		F4F5B6B8BA2BD52C646ED908 /* OscException.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscException.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscException.h; sourceTree = SOURCE_ROOT; };
@@ -800,6 +817,7 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				F3900BAD1B764BDF0069A18E /* ofxVectorMath */,
 				18240ECCE4076FB0833A8578 /* ofxNetwork */,
 				E6053AB7FEC63D5F83825B88 /* ofxOsc */,
 				5B3BFE89BB3B98E8FC2F783F /* ofxBeat */,
@@ -955,6 +973,8 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				F3900B9A1B764B390069A18E /* particle.h */,
+				F3900B9B1B764B400069A18E /* particle.cpp */,
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
 				E4B69E1E0A3A1BDC003C02F2 /* ofApp.cpp */,
 				E4B69E1F0A3A1BDC003C02F2 /* ofApp.h */,
@@ -1012,6 +1032,36 @@
 				F34A4B8B1B43115B00FD04C3 /* libfftw3f-3.dll */,
 			);
 			path = win32;
+			sourceTree = "<group>";
+		};
+		F3900BAD1B764BDF0069A18E /* ofxVectorMath */ = {
+			isa = PBXGroup;
+			children = (
+				F3900BAE1B764BDF0069A18E /* install.xml */,
+				F3900BAF1B764BDF0069A18E /* src */,
+			);
+			name = ofxVectorMath;
+			path = ../typeSwarms/addons/ofxVectorMath;
+			sourceTree = "<group>";
+		};
+		F3900BAF1B764BDF0069A18E /* src */ = {
+			isa = PBXGroup;
+			children = (
+				F3900BB01B764BDF0069A18E /* ofxMatrix3x3.cpp */,
+				F3900BB11B764BDF0069A18E /* ofxMatrix3x3.h */,
+				F3900BB21B764BDF0069A18E /* ofxMatrix4x4.cpp */,
+				F3900BB31B764BDF0069A18E /* ofxMatrix4x4.h */,
+				F3900BB41B764BDF0069A18E /* ofxPoint2f.h */,
+				F3900BB51B764BDF0069A18E /* ofxPoint3f.h */,
+				F3900BB61B764BDF0069A18E /* ofxPoint4f.h */,
+				F3900BB71B764BDF0069A18E /* ofxQuaternion.cpp */,
+				F3900BB81B764BDF0069A18E /* ofxQuaternion.h */,
+				F3900BB91B764BDF0069A18E /* ofxVec2f.h */,
+				F3900BBA1B764BDF0069A18E /* ofxVec3f.h */,
+				F3900BBB1B764BDF0069A18E /* ofxVec4f.h */,
+				F3900BBC1B764BDF0069A18E /* ofxVectorMath.h */,
+			);
+			path = src;
 			sourceTree = "<group>";
 		};
 		FF8CDF57858E9B94E3237115 /* ip */ = {
@@ -1193,6 +1243,7 @@
 				856AA354D08AB4B323081444 /* ofxBaseGui.cpp in Sources */,
 				5CBB2AB3A60F65431D7B555D /* ofxButton.cpp in Sources */,
 				B266578FC55D23BFEBC042E7 /* ofxGuiGroup.cpp in Sources */,
+				F3900B9C1B764B400069A18E /* particle.cpp in Sources */,
 				483908258D00B98B4BE69F07 /* ofxLabel.cpp in Sources */,
 				F285EB3169F1566CA3D93C20 /* ofxPanel.cpp in Sources */,
 				837220E80EB56CD44AD27F2A /* ofxSlider.cpp in Sources */,

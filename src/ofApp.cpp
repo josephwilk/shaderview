@@ -1,4 +1,5 @@
 #include "ofApp.h"
+#include "particle.h"
 #define STRINGIFY(A) #A
 
 void ofApp::setup(){
@@ -190,9 +191,51 @@ void ofApp::setup(){
     watcher.addPath(folderToWatch, listExistingItemsOnStart, &fileFilter);
     
     fft.setup(16384);
+    
+    
+    for (int i = 0; i < generativeMesh.getNumVertices(); i++){
+//        if(i % 4 == 0){
+            particle myParticle;
+
+		myParticle.setInitialCondition(generativeMesh.getVertex(i).x, generativeMesh.getVertex(i).y, 0,0);
+		particles.push_back(myParticle);
+ //       }
+	}
+    
 }
 
 void ofApp::update(){
+    
+    for (int i = 0; i < particles.size(); i++){
+		particles[i].resetForce();
+	}
+	
+	for (int i = 0; i < particles.size(); i++){
+		for (int j = 0; j < particles.size(); j++){
+			if (i != j){
+				particles[i].addForFlocking(particles[j]);
+			}
+		}
+		
+		particles[i].addRepulsionForce(mouseX, mouseY, 150, 0.4);
+	}
+	
+	for (int i = 0; i < particles.size(); i++){
+		particles[i].addFlockingForce();
+		particles[i].addDampingForce();
+		particles[i].bounceOffWalls();
+		particles[i].update();
+        
+        ofVec3f m = generativeMesh.getVertex(i);
+        m.x = particles[i].pos.x;
+        m.y = particles[i].pos.y;
+        generativeMesh.setVertex(i, m);
+	}
+	
+	//writeShape2();
+
+    
+    
     fft.update();
     //TODO: Volume
     currentAmp = 0.0;
@@ -306,10 +349,12 @@ void ofApp::update(){
     
 }
 
+
 void ofApp::draw(){
     fbo.begin();
     //ofBackground(0, 0, 0);
 
+    
     if(showFreqGraph){
         ofBackground(0, 0, 0);
         ofPushMatrix();
@@ -373,6 +418,7 @@ void ofApp::draw(){
     if(meshing){
         //easyCam.begin();
         ofPushMatrix();
+        //-1000 smallest   1000   =   biggest
         ofTranslate((ofGetWidth()/2)-image.width-205, (ofGetHeight()/2.0)-(image.height)-100);
         //float time = ofGetElapsedTimef();	//Get time in seconds
         //float angle = time * 10;			//Compute angle. We rotate at speed 10 degrees per second
@@ -382,6 +428,12 @@ void ofApp::draw(){
         //ofBackgroundGradient(centerColor, edgeColor, OF_GRADIENT_CIRCULAR);
 
         generativeMesh.draw();
+        
+        //for (int i = 0; i < generativeMesh.getNumVertices(); i++){
+        //    particles[i].draw();
+        //}
+
+        
         ofPopMatrix();
         //easyCam.end();
     }

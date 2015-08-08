@@ -7,6 +7,7 @@
 #include "ofxOsc.h"
 #include "ofxEditor.h";
 #include "ofxPostProcessing.h"
+#include "particle.h"
 
 class ofApp : public ofBaseApp{
    
@@ -20,6 +21,8 @@ class ofApp : public ofBaseApp{
     string defaultGeom;
 
     map<string, float> uniforms;
+    
+    vector <particle> particles;
     
     ofx::IO::DirectoryWatcherManager watcher;
     ofx::IO::HiddenFileFilter fileFilter;
@@ -71,6 +74,8 @@ public:
     void gotMessage(ofMessage msg);
     void onMessageReceived(ofxOscMessage &msg);
     string prepareShader(string path);
+    
+    void writeShape2();
     
     void toggleEditorSave(void);
     
