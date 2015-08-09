@@ -39,9 +39,13 @@ Clojure example:
 * https://github.com/darrenmothersele/ofxEditor
 * https://github.com/neilmendoza/ofxPostProcessing
 
-### Build/Install instructions
+### Build instructions
 
-#### Ubuntu
+##### Os X
+
+Xcode.
+
+##### Ubuntu (Extremely experimental)
 
 Some notes from @mattrei on the process to get an install on Ubuntu:  
 
