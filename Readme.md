@@ -39,6 +39,20 @@ Clojure example:
 * https://github.com/darrenmothersele/ofxEditor
 * https://github.com/neilmendoza/ofxPostProcessing
 
+### Build/Install instructions
+
+#### Ubuntu
+
+Some notes from @mattrei on the process to get an install on Ubuntu:  
+
+* ofxEditor: would not compile because in the src/ClipBoard.cpp the ClipBoard.h is spelled wrongly. Did a pull request already there. for now we have to fix it manually.
+
+* ofxOsc: dont use the addon which ships with oF 8.0.x; use that one which is suggested in the README.md of shaderview
+
+* ofxPostProcessing: the current master is not working with the latest oF 8.0.4: in src/PostProcessing.h in line 52 and 53 remove the 'const' so it machte oF function signatures
+
+* ofxFft: you need this library 'sudo apt-get install libfftw3-dev '; and then in shaderviews 'config.make' add 'USER_LDFLAGS = -lfftw3f'
+
 ### Credits
 
 Inspired by Roger Allen's Shadertone: https://github.com/overtone/shadertone
