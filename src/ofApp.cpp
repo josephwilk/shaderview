@@ -81,6 +81,15 @@ void ofApp::update(){
     }
     mTexture.loadData(signal, 512, 2, GL_LUMINANCE);
 
+    for(auto const &it1 : uniforms) {
+        if(tickingUniforms.at(it1.first) && fabs(uniforms[it1.first]-tickingUniforms[it1.first]) > 0.001){
+            uniforms[it1.first] -= 0.01;
+        }
+        else{
+            tickingUniforms.erase(it1.first);
+        }
+    }
+    
     if(isShaderDirty){
         string oldShader = shader.getShaderSource(GL_FRAGMENT_SHADER);
         bool r = shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(ofToDataPath(mainFrag, true)));
@@ -196,6 +205,13 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
             uniforms[uniformName] += smoothRate;
         }
         ofLogNotice("Smoothed Uniform change. "+ uniformName + " => " +ofToString(uniforms[uniformName]));
+    }
+    if(addr == "/decaying-uniform"){//An update to a Uniform which ticks back to 0 in the draw loop
+        string uniformName  = msg.getArgAsString(0);
+        float  uniformValue = msg.getArgAsFloat(1);
+
+        tickingUniforms[uniformName] = uniformValue;
+        ofLogNotice("Tick Uniform change. "+ uniformName + " => " +ofToString(tickingUniforms[uniformName]));
     }
     if(addr == "/shader"){ //Load a new shader
         string shaderFile  = msg.getArgAsString(0);

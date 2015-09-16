@@ -11,7 +11,8 @@
 class ofApp : public ofBaseApp{
    
     map<string, float> uniforms;
-    
+    map<string, float> tickingUniforms;
+
     ofx::IO::DirectoryWatcherManager watcher;
     ofx::IO::HiddenFileFilter fileFilter;
     ofShader shader;
