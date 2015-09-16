@@ -56,6 +56,7 @@ public:
     void gotMessage(ofMessage msg);
     void onMessageReceived(ofxOscMessage &msg);
     string prepareShader(string path);
+    string loadFileShader(string path);
     
     void toggleEditorSave(void);
     

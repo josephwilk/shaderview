@@ -28,7 +28,7 @@ void ofApp::setup(){
     editor.loadFile(ofToDataPath(mainFrag, true), 1);
     editor.update();
     
-	shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(ofToDataPath(mainFrag, true)));
+	shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(loadFileShader(ofToDataPath(mainFrag, true))));
     shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
     shader.linkProgram();
     
@@ -92,7 +92,7 @@ void ofApp::update(){
     
     if(isShaderDirty){
         string oldShader = shader.getShaderSource(GL_FRAGMENT_SHADER);
-        bool r = shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(ofToDataPath(mainFrag, true)));
+        bool r = shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(loadFileShader(ofToDataPath(mainFrag, true))));
         shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
         if(!r){
             shader.setupShaderFromSource(GL_FRAGMENT_SHADER, oldShader);
@@ -213,6 +213,11 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
         tickingUniforms[uniformName] = uniformValue;
         ofLogNotice("Tick Uniform change. "+ uniformName + " => " +ofToString(tickingUniforms[uniformName]));
     }
+    if(addr == "/shader-string"){ //Load a shader from a string
+        string shaderString  = msg.getArgAsString(0);
+        bool r = shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(shaderString));
+        shader.linkProgram();
+    }
     if(addr == "/shader"){ //Load a new shader
         string shaderFile  = msg.getArgAsString(0);
         int found = shaderFile.find_last_of("/");
@@ -253,14 +258,18 @@ void ofApp::plot(vector<float>& buffer, float scale) {
     ofPopMatrix();
 }
 
-string ofApp::prepareShader(string path){
-	ofFile file;
-
+string ofApp::loadFileShader(string path){
+    ofFile file;
+    
 	if(!file.open(ofToDataPath(path), ofFile::ReadOnly)){
-		return false;
+        return false;
 	}
     string shaderText = file.readToBuffer().getText();
 	file.close();
+    return shaderText;
+}
+
+string ofApp::prepareShader(string shaderText){
     shaderText =  STRINGIFY(
                             uniform vec3 iResolution;
                             uniform float iGlobalTime;
