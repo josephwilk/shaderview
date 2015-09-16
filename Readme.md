@@ -2,6 +2,8 @@
 
 Mad scrawlings of thoughts and ideas. Work in progress. Unstable.
 
+Shaderview has been used in performances with live coding languages like [Sonic Pi](http://sonic-pi.net/) and [Overtone](https://github.com/overtone/overtone).
+
 ### OSC based Uniforms
 
 Osc Server listening on port 9177: 
@@ -9,22 +11,36 @@ Osc Server listening on port 9177:
 ```
 Messages / Arguments
 * "/uniform" <UniformName> <FloatValue>
+
+Set uniform to a float value
+
 * "/smoothed-uniform" <UniformName> <FloatValue>
+
+Move a uniform towards a float value (Fixed rate for now). Execute multiple times to eventually get to FloatValue.
+
 * "/decaying-uniform" <UniformName> <FloatValue>
+
+Like /uniform but the value will automatically decay to 0 (Fixed decay rate for now).
+
 * "/shader" <StringValue>
+
+Load a file which contains an opengl shader.
+
 * "/shader-string" <StringValue>
+
+Load a string as a opengl shader
 ```
 
 The uniforms are updated and sent to running shader.
 
-Ruby Example:
+##### Ruby Example:
 ```ruby
 require 'osc-ruby'
 @client = OSC::Client.new('localhost', 9177)
 @client.send(OSC::Message.new("/shader" , "/Users/josephwilk/shaders/wave.glsl"))
 ```
 
-Clojure example:
+##### Clojure example:
 ```clojure
 (use 'overtone.osc)
 (def client (osc-client "localhost" 9177))
