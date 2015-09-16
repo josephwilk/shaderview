@@ -10,7 +10,9 @@ Osc Server listening on port 9177:
 Messages / Arguments
 * "/uniform" <UniformName> <FloatValue>
 * "/smoothed-uniform" <UniformName> <FloatValue>
+* "/decaying-uniform" <UniformName> <FloatValue>
 * "/shader" <StringValue>
+* "/shader-string" <StringValue>
 ```
 
 The uniforms are updated and sent to running shader.
