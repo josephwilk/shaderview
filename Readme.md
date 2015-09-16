@@ -33,6 +33,19 @@ Clojure example:
 (osc-send client "/shader" "/usr/josephwilk/repl_electric.glsl")
 ```
 
+#### Simple Shader example
+
+A tiny example to get you started:
+
+```
+uniform float iR;
+uniform float iG;
+uniform float iB;
+void main(void){
+  gl_FragColor = vec4(iR,iG,iB, 1.0);
+}
+```
+
 ### OpenFramework Plugins
 
 * https://github.com/kylemcdonald/ofxFft
