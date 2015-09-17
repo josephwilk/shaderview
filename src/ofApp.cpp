@@ -82,7 +82,8 @@ void ofApp::update(){
     mTexture.loadData(signal, 512, 2, GL_LUMINANCE);
 
     for(auto const &it1 : uniforms) {
-        if(tickingUniforms.at(it1.first) && fabs(uniforms[it1.first]-tickingUniforms[it1.first]) > 0.001){
+        map<string,float>::iterator it = tickingUniforms.find(it1.first);
+        if(it != tickingUniforms.end() && fabs(uniforms[it1.first]-tickingUniforms[it1.first]) > 0.001){
             uniforms[it1.first] -= 0.01;
         }
         else{
