@@ -18,9 +18,9 @@ Set uniform to a float value
 
 Move a uniform towards a float value (Fixed rate for now). Execute multiple times to eventually get to FloatValue.
 
-* "/decaying-uniform" <UniformName> <FloatValue>
+* "/decaying-uniform" <UniformName> <FloatValue> [<FloatValue>]
 
-Like /uniform but the value will automatically decay to 0 (Fixed decay rate for now).
+Like /uniform but the value will automatically decay to 0. Decay defaults to 0.01 if not specificed.
 
 * "/shader" <StringValue>
 
