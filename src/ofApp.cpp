@@ -84,7 +84,7 @@ void ofApp::update(){
     for(auto const &it1 : uniforms) {
         map<string,float>::iterator it = tickingUniforms.find(it1.first);
         if(it != tickingUniforms.end() && fabs(uniforms[it1.first]) > 0.001){
-            uniforms[it1.first] -= 0.01;
+            uniforms[it1.first] -= decayRate[it1.first];
         }
         else{
             tickingUniforms.erase(it1.first);
@@ -210,6 +210,13 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
     if(addr == "/decaying-uniform"){//An update to a Uniform which ticks back to 0 in the draw loop
         string uniformName  = msg.getArgAsString(0);
         float  uniformValue = msg.getArgAsFloat(1);
+        if(msg.getNumArgs() > 2){
+            float  rate = msg.getArgAsFloat(2);
+            decayRate[uniformName] = rate;
+        }
+        else{
+            decayRate[uniformName] = 0.01;
+        }
 
         uniforms[uniformName] = uniformValue;
         tickingUniforms[uniformName] = uniformValue;
