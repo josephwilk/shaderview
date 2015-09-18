@@ -83,7 +83,7 @@ void ofApp::update(){
 
     for(auto const &it1 : uniforms) {
         map<string,float>::iterator it = tickingUniforms.find(it1.first);
-        if(it != tickingUniforms.end() && fabs(uniforms[it1.first]-tickingUniforms[it1.first]) > 0.001){
+        if(it != tickingUniforms.end() && fabs(uniforms[it1.first]) > 0.001){
             uniforms[it1.first] -= 0.01;
         }
         else{
@@ -211,6 +211,7 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
         string uniformName  = msg.getArgAsString(0);
         float  uniformValue = msg.getArgAsFloat(1);
 
+        uniforms[uniformName] = uniformValue;
         tickingUniforms[uniformName] = uniformValue;
         ofLogNotice("Tick Uniform change. "+ uniformName + " => " +ofToString(tickingUniforms[uniformName]));
     }
