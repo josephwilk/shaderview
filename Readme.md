@@ -10,7 +10,33 @@ OS X latest snapshot [https://github.com/josephwilk/shaderview/releases/download
 
 Downlaod and Launch Shaderview.
 
-### Supported Messages
+### First simple Example
+
+Shaderview launches with a default opengl shader. 
+
+```ruby
+uniform float iR;
+uniform float iG;
+uniform float iB;
+void main(void){
+  gl_FragColor = vec4(iR,iG,iB, 1.0);
+}
+```
+
+For more about the shader language: (https://www.opengl.org/documentation/glsl/)[https://www.opengl.org/documentation/glsl/]:
+And for examples see: (https://www.shadertoy.com/)[https://www.shadertoy.com/]
+
+From Ruby we change the colors of the visuals:
+
+```ruby
+require 'osc-ruby'
+@client = OSC::Client.new('localhost', 9177)
+@client.send(OSC::Message.new("/uniform" , "iR", 0.5))
+@client.send(OSC::Message.new("/uniform" , "iG", 0.1))
+@client.send(OSC::Message.new("/uniform" , "iB", 0.0))
+```
+
+### Shaderview Supported Messages
 
 Shaderview opens an Osc Server listening on port 9177. 
 The endpoints provided:
@@ -40,33 +66,20 @@ Load a string as a opengl shader
 
 The uniforms are updated and sent to running shader.
 
-##### Ruby Example:
+##### Ruby Client Example:
 ```ruby
 require 'osc-ruby'
 @client = OSC::Client.new('localhost', 9177)
 @client.send(OSC::Message.new("/shader" , "/Users/josephwilk/shaders/wave.glsl"))
 ```
 
-##### Clojure example:
+##### Clojure Client example:
 ```clojure
 (use 'overtone.osc)
 (def client (osc-client "localhost" 9177))
 
 (osc-send client "/uniform" "iExample" (float 100.0))
 (osc-send client "/shader" "/usr/josephwilk/repl_electric.glsl")
-```
-
-#### Simple Shader example
-
-A tiny example to get you started:
-
-```
-uniform float iR;
-uniform float iG;
-uniform float iB;
-void main(void){
-  gl_FragColor = vec4(iR,iG,iB, 1.0);
-}
 ```
 
 ### OpenFramework Plugins
