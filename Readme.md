@@ -8,9 +8,12 @@ Shaderview has been used in performances with live coding languages like [Sonic 
 
 OS X latest snapshot [https://github.com/josephwilk/shaderview/releases/download/v0.0.1/snapshot.tar.gz](https://github.com/josephwilk/shaderview/releases/download/v0.0.1/snapshot.tar.gz)
 
-### OSC based Uniforms
+Downlaod and Launch Shaderview.
 
-Osc Server listening on port 9177: 
+### Supported Messages
+
+Shaderview opens an Osc Server listening on port 9177. 
+The endpoints provided:
 
 ```
 Messages / Arguments
