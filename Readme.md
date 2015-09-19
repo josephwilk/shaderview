@@ -23,8 +23,8 @@ void main(void){
 }
 ```
 
-For more about the shader language: (https://www.opengl.org/documentation/glsl/)[https://www.opengl.org/documentation/glsl/]:
-And for examples see: (https://www.shadertoy.com/)[https://www.shadertoy.com/]
+For more about the shader language: [https://www.opengl.org/documentation/glsl/](https://www.opengl.org/documentation/glsl/):
+And for examples see: [https://www.shadertoy.com/](https://www.shadertoy.com/)
 
 From Ruby we change the colors of the visuals:
 
