@@ -88,6 +88,7 @@ void ofApp::update(){
         }
         else{
             tickingUniforms.erase(it1.first);
+            decayRate.erase(it1.first);
         }
     }
     
