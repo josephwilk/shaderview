@@ -4,6 +4,10 @@ Mad scrawlings of thoughts and ideas. Work in progress. Unstable.
 
 Shaderview has been used in performances with live coding languages like [Sonic Pi](http://sonic-pi.net/) and [Overtone](https://github.com/overtone/overtone).
 
+### Install
+
+OS X latest snapshot [https://github.com/josephwilk/shaderview/releases/download/v0.0.1/snapshot.tar.gz](https://github.com/josephwilk/shaderview/releases/download/v0.0.1/snapshot.tar.gz)
+
 ### OSC based Uniforms
 
 Osc Server listening on port 9177: 
@@ -70,7 +74,7 @@ void main(void){
 * https://github.com/darrenmothersele/ofxEditor
 * https://github.com/neilmendoza/ofxPostProcessing
 
-### Build instructions
+### Dev Build instructions
 
 ##### Os X
 
