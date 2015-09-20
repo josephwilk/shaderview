@@ -62,6 +62,11 @@ Load a file which contains an opengl shader.
 * "/shader-string" <StringValue>
 
 Load a string as a opengl shader
+
+* "/texture" <StringValue> <IntValue>
+
+Load an image file as a texture in your shader. Texture is defined as iChannel1/2/3 based on IntValue. Add `uniform sampler2D iChannel1` to your shader.
+
 ```
 
 The uniforms are updated and sent to running shader.
