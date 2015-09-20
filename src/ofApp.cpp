@@ -65,9 +65,6 @@ void ofApp::setup(){
 
 void ofApp::update(){
     fft.update();
-    //TODO: Volume
-    currentAmp = 0.0;
-    
     vector<float>& buffer = fft.getBins();
     
     unsigned char signal[1024];
@@ -136,7 +133,7 @@ void ofApp::draw(){
 
     shader.setUniform1f("iGlobalTime", ofGetElapsedTimef() );
     shader.setUniform3f("iResolution", ofGetWidth() , ofGetHeight(), 1) ;
-    shader.setUniform1f("iVolume", currentAmp) ;
+    shader.setUniform1f("iVolume", currentAmp);
     for(auto const &it1 : uniforms) {
         shader.setUniform1f(it1.first, uniforms[it1.first]);
     }
@@ -244,6 +241,9 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
 
         mainFrag = shaderFile;
         isShaderDirty = true;
+    }
+    if(addr == "/volume"){
+        currentAmp = msg.getArgAsFloat(0);
     }
 
 }
