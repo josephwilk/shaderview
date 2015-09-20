@@ -54,7 +54,7 @@ Move a uniform towards a float value (Fixed rate for now).
 Execute multiple times to eventually get to FloatValue.
 
 
-* "/decaying-uniform" <UniformName> <FloatValue> [<FloatValue>]
+* "/decaying-uniform" <UniformName> <FloatValue> [FloatValue]
 Like /uniform but the value will automatically decay to 0. 
 Decay defaults to 0.01 if not specified.
 
