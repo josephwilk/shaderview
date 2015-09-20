@@ -245,6 +245,12 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
     if(addr == "/volume"){
         currentAmp = msg.getArgAsFloat(0);
     }
+    if(addr == "/texture"){
+        string textureFile  = msg.getArgAsString(0);
+        ofImage image;
+        image.loadImage(textureFile);
+        shader.setUniformTexture("iChannel1", image.getTextureReference(), 1);
+    }
 
 }
 
