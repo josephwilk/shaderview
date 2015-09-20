@@ -8,7 +8,7 @@ Shaderview has been used in performances with live coding languages like [Sonic 
 
 OS X latest snapshot [https://github.com/josephwilk/shaderview/releases/download/v0.0.1/snapshot.tar.gz](https://github.com/josephwilk/shaderview/releases/download/v0.0.1/snapshot.tar.gz)
 
-Downlaod and Launch Shaderview.
+Download and Launch Shaderview.
 
 ### First simple Example
 
@@ -49,24 +49,32 @@ Set uniform to a float value
 
 * "/smoothed-uniform" <UniformName> <FloatValue>
 
-Move a uniform towards a float value (Fixed rate for now). Execute multiple times to eventually get to FloatValue.
+Move a uniform towards a float value (Fixed rate for now). 
+Execute multiple times to eventually get to FloatValue.
 
 * "/decaying-uniform" <UniformName> <FloatValue> [<FloatValue>]
 
-Like /uniform but the value will automatically decay to 0. Decay defaults to 0.01 if not specificed.
+Like /uniform but the value will automatically decay to 0. 
+Decay defaults to 0.01 if not specified.
 
 * "/shader" <StringValue>
 
-Load a file which contains an opengl shader.
+Load a file which contains an OpenGL shader.
 
 * "/shader-string" <StringValue>
 
-Load a string as a opengl shader
+Load a string as a OpenGL shader
 
 * "/texture" <StringValue> <IntValue>
 
-Load an image file as a texture in your shader. Texture is defined as iChannel1/2/3 based on IntValue. Add `uniform sampler2D iChannel1` to your shader.
+Load an image file as a texture in your shader. 
+Texture is defined as iChannel1/2/3 based on IntValue. 
+Add `uniform sampler2D iChannel1` to your shader.
 
+* "/volume" <FloatValue>
+
+Sets iVolume in shader. Useful for say sending the 
+volume from something like Sonic Pi
 ```
 
 The uniforms are updated and sent to running shader.
