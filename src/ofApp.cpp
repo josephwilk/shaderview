@@ -285,6 +285,7 @@ string ofApp::prepareShader(string shaderText){
                             uniform float iGlobalTime;
                             uniform vec2 iMouse;
                             uniform vec4 iDate;
+                            uniform float iVolume;
 ) + shaderText;
     
     shaderText = "#version 120\n" + shaderText;
