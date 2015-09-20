@@ -247,9 +247,13 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
     }
     if(addr == "/texture"){
         string textureFile  = msg.getArgAsString(0);
-        ofImage image;
-        image.loadImage(textureFile);
-        shader.setUniformTexture("iChannel1", image.getTextureReference(), 1);
+        int textureId  = msg.getArgAsInt32(0);
+        if(textureId <= 3){
+            //TODO: Cleanup images if reloaded
+            ofImage image;
+            image.loadImage(textureFile);
+            shader.setUniformTexture("iChannel"+ofToString(textureId), image.getTextureReference(), 1);
+        }
     }
 
 }
