@@ -10,7 +10,7 @@ void ofApp::setup(){
     editor.addCommand('a', this, &ofApp::toggleEditor);
     
     mainFrag    = "nil.glsl";
-    currentAmp = 0.0;
+    currentAmp = 1.0;
     
     defaultVert = STRINGIFY(
                             uniform mat4 modelViewProjectionMatrix;
