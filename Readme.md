@@ -42,7 +42,8 @@ Shaderview opens an Osc Server listening on port 9177.
 The endpoints provided:
 
 ```
-Messages / Arguments
+Message  <Argument> [Optional Argument]
+
 * "/uniform" <UniformName> <FloatValue>
 
 Set uniform to a float value
