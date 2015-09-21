@@ -4,7 +4,7 @@ Shaderview is an app for creating visuals using OpenGl Shaders and it uses OSC m
 
 Shaderview has been already been used in performances with live coding languages like [Sonic Pi](http://sonic-pi.net/) and [Overtone](https://github.com/overtone/overtone).
 
-![](https://pbs.twimg.com/media/COpxg-UVAAAL06B.jpg:small)
+![](https://pbs.twimg.com/media/CLVUhFjWwAE7dJP.png:small)
 
 ### Install
 
