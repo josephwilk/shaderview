@@ -8,7 +8,7 @@ Shaderview has been already been used in performances with live coding languages
 
 ### Install
 
-OS X latest snapshot [https://github.com/josephwilk/shaderview/releases/download/v0.0.1/snapshot.tar.gz](https://github.com/josephwilk/shaderview/releases/download/v0.0.1/snapshot.tar.gz)
+OS X latest snapshot [https://github.com/josephwilk/shaderview/releases/download/v0.0.1/shaderview.tar.gz](https://github.com/josephwilk/shaderview/releases/download/v0.0.1/shaderview.tar.gz)
 
 Download and Launch Shaderview.
 
