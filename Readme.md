@@ -1,8 +1,10 @@
 ![screenshot 2015-07-28 18 41 49](https://cloud.githubusercontent.com/assets/9792/8938008/2bacab68-355c-11e5-899a-dcd90928be12.png)
 
-Shaderview is an app for creating visuals using OpenGl Shaders which uses OSC messages to communicate changes in state. For example when live coding music you could send an OSC message when the drum sample played.
+Shaderview is an app for creating visuals using OpenGl Shaders and it uses OSC messages to communicate changes in state. For example when live coding music you could send an OSC message when the drum sample played and in turn your shader could do something with that signal, like flashing of white.
 
-Shaderview has been used in performances with live coding languages like [Sonic Pi](http://sonic-pi.net/) and [Overtone](https://github.com/overtone/overtone).
+Shaderview has been already been used in performances with live coding languages like [Sonic Pi](http://sonic-pi.net/) and [Overtone](https://github.com/overtone/overtone).
+
+![](https://pbs.twimg.com/media/COpxg-UVAAAL06B.jpg:small)
 
 ### Install
 
