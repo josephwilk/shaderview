@@ -247,18 +247,25 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
     }
     if(addr == "/texture"){
         string textureFile  = msg.getArgAsString(0);
-        int textureId  = msg.getArgAsInt32(1);
+        int textureId;
+        if(msg.getNumArgs() == 1){
+             textureId = 1;
+        }
+        else{
+            textureId  = msg.getArgAsInt32(1);
+        }
         if(textureId <= 3){
             ofImage image;  //TODO: Cleanup images if reloaded
 
             if(textureFile == "tex10" || textureFile == "tex11" ||
                textureFile == "tex15" || textureFile == "tex16"){
-                image.loadImage(ofToDataPath("textures/"+textureFile + ".png", true));
+                textureFile = ofToDataPath("textures/" + textureFile + ".png", true);
             }
-            else{
-                image.loadImage(textureFile);
-            }
-            shader.setUniformTexture("iChannel"+ofToString(textureId), image.getTextureReference(), 1);
+            string channel = "iChannel"+ofToString(textureId);
+            image.loadImage(textureFile);
+            ofLogNotice("Loading to ["+channel+"] texture: ["+ textureFile + "]");
+
+            shader.setUniformTexture(channel, image.getTextureReference(), 1);
         }
     }
 
