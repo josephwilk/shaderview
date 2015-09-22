@@ -249,9 +249,15 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
         string textureFile  = msg.getArgAsString(0);
         int textureId  = msg.getArgAsInt32(1);
         if(textureId <= 3){
-            //TODO: Cleanup images if reloaded
-            ofImage image;
-            image.loadImage(textureFile);
+            ofImage image;  //TODO: Cleanup images if reloaded
+
+            if(textureFile == "tex10" || textureFile == "tex11" ||
+               textureFile == "tex15" || textureFile == "tex16"){
+                image.loadImage(ofToDataPath(textureFile + ".png", true));
+            }
+            else{
+                image.loadImage(textureFile);
+            }
             shader.setUniformTexture("iChannel"+ofToString(textureId), image.getTextureReference(), 1);
         }
     }
