@@ -253,7 +253,7 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
 
             if(textureFile == "tex10" || textureFile == "tex11" ||
                textureFile == "tex15" || textureFile == "tex16"){
-                image.loadImage(ofToDataPath(textureFile + ".png", true));
+                image.loadImage(ofToDataPath("textures/"+textureFile + ".png", true));
             }
             else{
                 image.loadImage(textureFile);
