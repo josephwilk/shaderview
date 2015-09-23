@@ -5,8 +5,15 @@ Shaderview is an app for creating visuals using OpenGl Shaders and it uses OSC m
 ```ruby
 require 'osc-ruby'
 @client ||= OSC::Client.new('localhost', 9177)
+
+@client.send(OSC::Message.new("/shader-string", "
+uniform float iKick;
+void main(void){
+  gl_FragColor = vec4(iKick,0.0,0.0, 1.0);
+}"))
+
 sample :drum_heavy_kick
-@client.send(OSC::Message.new("decaying-uniform", "iKick", "1.0"))
+@client.send(OSC::Message.new("/decaying-uniform", "iKick", 1.0, 0.01))
 ```
 
 Since Shaderview does everything through OSC, there is no tie to a specific client language.
