@@ -44,14 +44,15 @@ void main(void){
 For more about the shader language: [https://www.opengl.org/documentation/glsl/](https://www.opengl.org/documentation/glsl/):
 And for examples see: [https://www.shadertoy.com/](https://www.shadertoy.com/)
 
-From Ruby we change the colors of the visuals:
+From Ruby we change the colors of the visuals. We have a number of ways we can change `uniforms` each
+which tries to make it ease for the client to control their light show.
 
 ```ruby
 require 'osc-ruby'
 @client = OSC::Client.new('localhost', 9177)
 @client.send(OSC::Message.new("/uniform" , "iR", 0.5))
-@client.send(OSC::Message.new("/uniform" , "iG", 0.1))
-@client.send(OSC::Message.new("/uniform" , "iB", 0.0))
+@client.send(OSC::Message.new("/decaying-uniform" , "iG", 0.1))
+@client.send(OSC::Message.new("/smoothed-uniform" , "iB", 0.0))
 ```
 
 ### Shaderview Supported Messages
