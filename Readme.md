@@ -78,7 +78,8 @@ Decay defaults to 0.01 if not specified.
 
 
 * "/shader" <StringValue>
-Load a file which contains an OpenGL shader.
+Load a file which contains an OpenGL shader. Once loaded the 
+file will be watched for changes and auto-reloaded
 
 
 * "/shader-string" <StringValue>
