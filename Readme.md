@@ -2,6 +2,12 @@
 
 Shaderview is an app for creating visuals using OpenGl Shaders and it uses OSC messages to communicate changes in state. For example when live coding music you could send an OSC message when the drum sample played and in turn your shader could do something with that signal, like flashing of white.
 
+```ruby
+sample :drum_heavy_kick
+@client ||= OSC::Client.new('localhost', 9177)
+@client.send(OSC::Message.new("decaying-uniform", "iKick", "1.0"))
+```
+
 Shaderview has been already been used in performances with live coding languages like [Sonic Pi](http://sonic-pi.net/) and [Overtone](https://github.com/overtone/overtone).
 
 ![](https://pbs.twimg.com/media/CLVUhFjWwAE7dJP.png:small)
