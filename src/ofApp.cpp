@@ -110,6 +110,8 @@ void ofApp::update(){
         }
         shader.linkProgram();
         isShaderDirty = false;
+        editor.loadFile(ofToDataPath("errors.log", true), 0);
+        editor.update();
     }
 }
 
