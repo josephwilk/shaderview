@@ -62,6 +62,7 @@ public:
     void toggleEditorSave(void);
     
     static void toggleEditor(void *);
+    static void toggleErrors(void *);
     
     
     void onDirectoryWatcherItemModified(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt);

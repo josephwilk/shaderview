@@ -10,7 +10,9 @@ void ofApp::setup(){
     showFreqGraph = false;
     ofDisableArbTex();
 
+    editor.addCommand('e', this, &ofApp::toggleErrors);
     editor.addCommand('a', this, &ofApp::toggleEditor);
+
     
     mainFrag    = "nil.glsl";
     currentAmp = 1.0;
@@ -321,6 +323,11 @@ string ofApp::prepareShader(string shaderText){
 void ofApp::toggleEditor(void * _o){
     ((ofApp *)_o)->editorVisible = !((ofApp *)_o)->editorVisible;
     ((ofApp *)_o)->editor.loadFile(ofToDataPath(((ofApp *)_o)->mainFrag, true), 1);
+}
+
+void ofApp::toggleErrors(void * _o){
+    ((ofApp *)_o)->editorVisible = !((ofApp *)_o)->editorVisible;
+    ((ofApp *)_o)->editor.loadFile(ofToDataPath("errors.log", true), 1);
 }
 
 void ofApp::toggleEditorSave(){
