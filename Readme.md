@@ -75,7 +75,7 @@ Execute multiple times to eventually get to FloatValue.
 
 * "/decaying-uniform" <UniformName> <FloatValue> [FloatValue]
 Like /uniform but the value will automatically decay to 0. 
-Decay defaults to 0.01 if not specified.
+Decay rate defaults to 0.01 if not specified.
 
 
 * "/shader" <StringValue>
@@ -124,6 +124,7 @@ require 'osc-ruby'
 <cmd>+f     Full Screen
 <ESC>       Quit
 <tab>       With editor showing, change buffer
+<cmd>+s     With editor showing, save buffer
 ```
 
 ### OpenFramework Plugins
