@@ -116,6 +116,13 @@ require 'osc-ruby'
 (osc-send client "/shader" "/usr/josephwilk/repl_electric.glsl")
 ```
 
+### Shortcut keys
+
+```
+<cmd>+e     Show error log
+<cmd>+a     Show active shader code
+```
+
 ### OpenFramework Plugins
 
 * https://github.com/kylemcdonald/ofxFft
