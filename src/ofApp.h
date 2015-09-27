@@ -38,7 +38,7 @@ class ofApp : public ofBaseApp{
    
     
 public:
-    ofApp() : editor(2), editorVisible(false), isFullscreen(false) {}
+    ofApp() : editor(2), editorVisible(false), isFullscreen(true) {}
     bool isShaderDirty;
     void setup();
     void update();
