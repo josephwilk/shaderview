@@ -9,6 +9,7 @@ void ofApp::setup(){
     listeningOnPort = 9177;
     shaderErrored = false;
     showFreqGraph = false;
+    isFullscreen = true;
     ofDisableArbTex();
 
     editor.addCommand('e', this, &ofApp::toggleErrors);
@@ -182,7 +183,7 @@ void ofApp::keyReleased(int key){
 		case OF_KEY_F11:
 			ofToggleFullscreen();
 			ofHideCursor();
-                        isFullscreen= true;
+            isFullscreen= true;
 			break;
 		default:
 			break;
@@ -355,8 +356,20 @@ void ofApp::keyPressed(int key){
     }
     else if(cmd && key == 'f'){
         ofToggleFullscreen();
-        ofHideCursor();
-        isFullscreen= true;
+        if(this->isFullscreen){
+            ofShowCursor();
+#ifdef __APPLE__
+            CGDisplayShowCursor(NULL);
+#endif
+            isFullscreen= false;
+        }
+        else{
+            ofHideCursor();
+#ifdef __APPLE__
+            CGDisplayHideCursor(NULL);
+#endif
+            isFullscreen= true;
+        }
 
     }
 }
