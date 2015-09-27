@@ -2,6 +2,9 @@
 #define STRINGIFY(A) #A
 
 void ofApp::setup(){
+    ofSetLogLevel(OF_LOG_ERROR);
+    ofLogToFile("errors.log", true);
+
     listeningOnPort = 9177;
     shaderErrored = false;
     showFreqGraph = false;
