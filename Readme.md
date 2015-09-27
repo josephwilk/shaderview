@@ -121,6 +121,9 @@ require 'osc-ruby'
 ```
 <cmd>+e     Show error log
 <cmd>+a     Show active shader code
+<cmd>+f     Full Screen
+<ESC>       Quit
+<tab>       With editor showing, change buffer
 ```
 
 ### OpenFramework Plugins
