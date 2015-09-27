@@ -183,7 +183,8 @@ void ofApp::keyReleased(int key){
 			break;
 		case OF_KEY_F11:
 			ofToggleFullscreen();
-            isFullscreen= true;
+			ofHideCursor();
+                        isFullscreen= true;
 			break;
 		default:
 			break;
@@ -348,6 +349,7 @@ void ofApp::keyPressed(int key){
     }
     else if(cmd && key == 'f'){
         ofToggleFullscreen();
+        ofHideCursor();
         isFullscreen= true;
 
     }
