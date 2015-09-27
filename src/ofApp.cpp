@@ -2,10 +2,7 @@
 #define STRINGIFY(A) #A
 
 void ofApp::setup(){
-    ofFile errorFile;
-    errorFile.open(ofToDataPath("errors.log"), ofFile::ReadWrite, false);
-    errorFile.removeFile(ofToDataPath("errors.log"));
-    errorFile.close();
+    clearErrorLog();
     ofSetLogLevel(OF_LOG_ERROR);
     ofLogToFile("errors.log", true);
 
@@ -99,6 +96,7 @@ void ofApp::update(){
     }
     
     if(isShaderDirty){
+        clearErrorLog();
         string oldShader = shader.getShaderSource(GL_FRAGMENT_SHADER);
         bool r = shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(loadFileShader(ofToDataPath(mainFrag, true))));
         shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
@@ -323,6 +321,12 @@ string ofApp::prepareShader(string shaderText){
     
     shaderText = "#version 120\n" + shaderText;
     return shaderText;
+}
+
+void ofApp::clearErrorLog(void){
+    ofFile errorFile;
+    errorFile.open(ofToDataPath("errors.log"), ofFile::WriteOnly, false);
+    errorFile.close();
 }
 
 void ofApp::toggleEditor(void * _o){

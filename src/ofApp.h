@@ -60,6 +60,7 @@ public:
     string loadFileShader(string path);
     
     void toggleEditorSave(void);
+    void clearErrorLog(void);
     
     static void toggleEditor(void *);
     static void toggleErrors(void *);
