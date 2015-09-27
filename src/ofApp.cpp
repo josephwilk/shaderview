@@ -2,6 +2,10 @@
 #define STRINGIFY(A) #A
 
 void ofApp::setup(){
+    ofFile errorFile;
+    errorFile.open(ofToDataPath("errors.log"), ofFile::ReadWrite, false);
+    errorFile.removeFile(ofToDataPath("errors.log"));
+    errorFile.close();
     ofSetLogLevel(OF_LOG_ERROR);
     ofLogToFile("errors.log", true);
 
