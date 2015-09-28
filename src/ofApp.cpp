@@ -268,9 +268,9 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
         if(textureId <= 3){
             ofImage image;  //TODO: Cleanup images if reloaded
 
-            if(textureFile == "tex10" || textureFile == "tex11" ||
-               textureFile == "tex15" || textureFile == "tex16"){
-                textureFile = ofToDataPath("textures/" + textureFile + ".png", true);
+            if(textureFile == "tex10.png" || textureFile == "tex11.png" ||
+               textureFile == "tex15.png" || textureFile == "tex16.png"){
+                textureFile = ofToDataPath("textures/" + textureFile, true);
             }
             string channel = "iChannel"+ofToString(textureId);
             image.loadImage(textureFile);
