@@ -12,7 +12,9 @@ class ofApp : public ofBaseApp{
    
     map<string, float> uniforms;
     map<string, float> tickingUniforms;
+    map<string, float> growingUniforms;
     map<string, float> decayRate;
+    map<string, float> growthRate;
 
     ofx::IO::DirectoryWatcherManager watcher;
     ofx::IO::HiddenFileFilter fileFilter;

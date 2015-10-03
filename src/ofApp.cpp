@@ -86,13 +86,35 @@ void ofApp::update(){
     mTexture.loadData(signal, 512, 2, GL_LUMINANCE);
 
     for(auto const &it1 : uniforms) {
-        map<string,float>::iterator it = tickingUniforms.find(it1.first);
-        if(it != tickingUniforms.end() && fabs(uniforms[it1.first]) > 0.001){
-            uniforms[it1.first] -= decayRate[it1.first];
+        map<string,float>::iterator it  = growingUniforms.find(it1.first);
+        map<string,float>::iterator itD = tickingUniforms.find(it1.first);
+        if(itD == tickingUniforms.end()){
+            if(it != growingUniforms.end()){
+                if(fabs(uniforms[it1.first]) < growingUniforms[it1.first]){
+                    uniforms[it1.first] += growthRate[it1.first];
+                }
+                else{
+                    tickingUniforms[it1.first] = uniforms[it1.first];
+                    growingUniforms.erase(it1.first);
+                    growthRate.erase(it1.first);
+                }
+            }
         }
-        else{
-            tickingUniforms.erase(it1.first);
-            decayRate.erase(it1.first);
+    }
+    
+    for(auto const &it1 : uniforms) {
+        map<string,float>::iterator it = tickingUniforms.find(it1.first);
+        map<string,float>::iterator itD  = growingUniforms.find(it1.first);
+        if(itD == growingUniforms.end()){
+            if(it != tickingUniforms.end()){
+                if(fabs(uniforms[it1.first]) > 0.001){
+                    uniforms[it1.first] -= decayRate[it1.first];
+                }
+                else{
+                    tickingUniforms.erase(it1.first);
+                    decayRate.erase(it1.first);
+                }
+            }
         }
     }
     
@@ -230,6 +252,29 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
         uniforms[uniformName] = uniformValue;
         tickingUniforms[uniformName] = uniformValue;
         ofLogNotice("Tick Uniform change. "+ uniformName + " => " +ofToString(tickingUniforms[uniformName]));
+    }
+    if(addr == "/curve-uniform"){//experiment
+        string uniformName  = msg.getArgAsString(0);
+        float  uniformValue = msg.getArgAsFloat(1);
+        if(msg.getNumArgs() > 2){
+            float  rate = msg.getArgAsFloat(2);
+            growthRate[uniformName] = rate;
+        }
+        else{
+            growthRate[uniformName] = 0.01;
+        }
+        if(msg.getNumArgs() > 3){
+            float rate = msg.getArgAsFloat(3);
+            decayRate[uniformName] = rate;
+        }
+        else{
+            decayRate[uniformName] = 0.01;
+        }
+
+        uniforms[uniformName] = 0.0;
+        growingUniforms[uniformName] = uniformValue;
+        tickingUniforms.erase(uniformName);
+        ofLogNotice("Curve Uniform change. "+ uniformName + " => " +ofToString(growingUniforms[uniformName]));
     }
     if(addr == "/shader-string"){ //Load a shader from a string
         string shaderString  = msg.getArgAsString(0);
