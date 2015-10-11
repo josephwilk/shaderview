@@ -45,8 +45,7 @@ void main(void){
 For more about the shader language: [https://www.opengl.org/documentation/glsl/](https://www.opengl.org/documentation/glsl/):
 And for examples see: [https://www.shadertoy.com/](https://www.shadertoy.com/)
 
-From Ruby we change the colors of the visuals. We have a number of ways we can change `uniforms` each
-which tries to make it ease for the client to control their light show.
+From Ruby we change the colors of the visuals. We have a number of ways we can change `uniforms`, each one tries to make it easy for the client to control their light show.
 
 ```ruby
 require 'osc-ruby'
