@@ -73,21 +73,31 @@ Move a uniform towards a float value (Fixed rate for now).
 Execute multiple times to eventually get to FloatValue.
 
 
-* "/decaying-uniform" <UniformName> <FloatValue> [FloatValue]
+* "/decaying-uniform" <UniformName> <FloatValue> [FloatValue:decay-rate]
 Like /uniform but the value will automatically decay to 0. 
 Decay rate defaults to 0.01 if not specified.
 
+* "/growing-uniform" <UniformName> <FloatValue> [FloatValue:growth-rate]
+Like /smoothed-uniform but the value will automatically grow from 0 to target
+without having to call the endpoint again.
+Growth rate defaults to 0.01 if not specified.
 
-* "/shader" <StringValue>
+* "/curve-uniform" <UniformName> <FloatValue> [FloatValue:growth-rate] [FloatValue:decay-rate]
+Will automatically grow to target value and then once reached will auto decay to 0.
+Like growing-uniform & decaying-uniform combined.
+Growth+decay rate defaults to 0.01 if not specified.
+No fancy curves yet like Sin... todo
+
+* "/shader" <StringValue:full-filename-path>
 Load a file which contains an OpenGL shader. Once loaded the 
 file will be watched for changes and auto-reloaded
 
 
-* "/shader-string" <StringValue>
+* "/shader-string" <StringValue:opengl-frag-shader>
 Load a string as a OpenGL shader
 
 
-* "/texture" <StringValue> <IntValue>
+* "/texture" <StringValue> <IntValue:ichannel-no>
 Load an image file as a texture in your shader. 
 Texture is defined as iChannel1/2/3 based on IntValue. 
 Add `uniform sampler2D iChannel1` to your shader.
