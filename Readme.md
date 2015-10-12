@@ -91,9 +91,12 @@ Load a string as a OpenGL shader
 Load an image file as a texture in your shader. 
 Texture is defined as iChannel1/2/3 based on IntValue. 
 Add `uniform sampler2D iChannel1` to your shader.
-Comes with some default textures to use:
+Comes packaged with some useful noise textures, just give the filename:
 "tex10.png, tex11.png, tex15.png, tex16.png"
-
+https://github.com/josephwilk/shaderview/tree/master/bin/data/textures/tex10.png
+https://github.com/josephwilk/shaderview/tree/master/bin/data/textures/tex11.png
+https://github.com/josephwilk/shaderview/tree/master/bin/data/textures/tex15.png
+https://github.com/josephwilk/shaderview/tree/master/bin/data/textures/tex16.png
 
 * "/volume" <FloatValue>
 Sets iVolume in shader. Useful for say sending the 
