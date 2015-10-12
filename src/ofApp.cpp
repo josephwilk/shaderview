@@ -253,7 +253,7 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
         tickingUniforms[uniformName] = uniformValue;
         ofLogNotice("Tick Uniform change. "+ uniformName + " => " +ofToString(tickingUniforms[uniformName]));
     }
-    if(addr == "/curve-uniform"){//experiment
+    if(addr == "/curve-uniform"){ //experiment
         string uniformName  = msg.getArgAsString(0);
         float  uniformValue = msg.getArgAsFloat(1);
         if(msg.getNumArgs() > 2){
@@ -276,6 +276,25 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
         tickingUniforms.erase(uniformName);
         ofLogNotice("Curve Uniform change. "+ uniformName + " => " +ofToString(growingUniforms[uniformName]));
     }
+    
+    if(addr == "/growing-uniform"){//experiment , like smoothed but auto grows to n
+        string uniformName  = msg.getArgAsString(0);
+        float  uniformValue = msg.getArgAsFloat(1);
+        if(msg.getNumArgs() > 2){
+            float  rate = msg.getArgAsFloat(2);
+            growthRate[uniformName] = rate;
+        }
+        else{
+            growthRate[uniformName] = 0.01;
+        }
+        
+        uniforms[uniformName] = 0.0;
+        growingUniforms[uniformName] = uniformValue;
+        tickingUniforms.erase(uniformName);
+        ofLogNotice("Growing Uniform change. "+ uniformName + " => " +ofToString(growingUniforms[uniformName]));
+    }
+
+    
     if(addr == "/shader-string"){ //Load a shader from a string
         string shaderString  = msg.getArgAsString(0);
         bool r = shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(shaderString));
