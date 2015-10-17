@@ -22,6 +22,7 @@ Since Shaderview does everything through OSC, there is no tie to a specific clie
 Shaderview has been already been used in performances with live coding languages like [Sonic Pi](http://sonic-pi.net/) and [Overtone](https://github.com/overtone/overtone).
 
 ![](https://pbs.twimg.com/media/CLVUhFjWwAE7dJP.png:small)
+![](https://cloud.githubusercontent.com/assets/9792/10560237/e33c79a6-7504-11e5-9695-2e21c47ebeec.png)
 
 ### Install
 
