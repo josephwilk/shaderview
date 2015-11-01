@@ -6,6 +6,8 @@ void ofApp::setup(){
     ofSetLogLevel(OF_LOG_ERROR);
     ofLogToFile("errors.log", true);
 
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+    vertexType = GL_POINTS;
     listeningOnPort = 9177;
     shaderErrored = false;
     showFreqGraph = false;
@@ -348,6 +350,12 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
             watcher.addPath(vertPath, true, &fileFilter);
         }
 
+        if(type == "lines"){
+            vertexType = GL_LINES;
+        }
+        if(type == "points"){
+            vertexType = GL_POINTS;
+        }
         mainVert = vertFile;
         isVertexDirty = true;
     }
@@ -425,6 +433,7 @@ string ofApp::prepareShader(string shaderText){
 }
 
 string ofApp::prepareVertex(string vertexText){
+    vertexText = "#version 120\n" + vertexText;
     return vertexText;
 }
 
