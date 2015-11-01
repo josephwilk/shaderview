@@ -30,6 +30,7 @@ class ofApp : public ofBaseApp{
     
     string defaultVert;
     string mainFrag;
+    string mainVert;
     float currentAmp;
     ofxEditor editor;
     bool editorVisible;
@@ -42,6 +43,7 @@ class ofApp : public ofBaseApp{
 public:
     ofApp() : editor(2), editorVisible(false), isFullscreen(true) {}
     bool isShaderDirty;
+    bool isVertexDirty;
     void setup();
     void update();
     void draw();
@@ -59,6 +61,7 @@ public:
     void gotMessage(ofMessage msg);
     void onMessageReceived(ofxOscMessage &msg);
     string prepareShader(string path);
+    string prepareVertex(string path);
     string loadFileShader(string path);
     
     void toggleEditorSave(void);

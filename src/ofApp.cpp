@@ -10,13 +10,15 @@ void ofApp::setup(){
     shaderErrored = false;
     showFreqGraph = false;
     isFullscreen = true;
+    isVertexDirty = false;
     ofDisableArbTex();
 
     editor.addCommand('e', this, &ofApp::toggleErrors);
     editor.addCommand('a', this, &ofApp::toggleEditor);
 
     
-    mainFrag    = "nil.glsl";
+    mainFrag    = "voc.glsl";
+    mainVert    = "default.vert";
     currentAmp = 1.0;
     
     defaultVert = STRINGIFY(
@@ -118,6 +120,14 @@ void ofApp::update(){
         }
     }
     
+    if(isVertexDirty){
+        clearErrorLog();
+        bool r = shader.setupShaderFromSource(GL_VERTEX_SHADER, prepareShader(loadFileShader(ofToDataPath(mainVert, true))));
+        shader.linkProgram();
+        isVertexDirty = false;
+        editor.loadFile(ofToDataPath("errors.log", true), 0);
+        editor.update();
+    }
     if(isShaderDirty){
         clearErrorLog();
         string oldShader = shader.getShaderSource(GL_FRAGMENT_SHADER);
@@ -317,6 +327,23 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
         mainFrag = shaderFile;
         isShaderDirty = true;
     }
+    if(addr == "/vertex"){
+        string vertFile  = msg.getArgAsString(0);
+        int found = vertFile.find_last_of("/");
+        string vertPath = vertFile.substr(0, found);
+        found = mainVert.find_last_of("/");
+        string currentPath = vertFile.substr(0, found);
+
+        if(watcher.isWatching(currentPath)){
+            watcher.removePath(currentPath);
+        }
+        if(!watcher.isWatching(vertPath)){
+            watcher.addPath(vertPath, true, &fileFilter);
+        }
+
+        mainVert = vertFile;
+        isVertexDirty = true;
+    }
     if(addr == "/volume"){
         currentAmp = msg.getArgAsFloat(0);
     }
@@ -388,6 +415,10 @@ string ofApp::prepareShader(string shaderText){
     
     shaderText = "#version 120\n" + shaderText;
     return shaderText;
+}
+
+string ofApp::prepareVertex(string vertexText){
+    return vertexText;
 }
 
 void ofApp::clearErrorLog(void){
