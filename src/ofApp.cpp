@@ -8,6 +8,7 @@ void ofApp::setup(){
 
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     vertexType = GL_POINTS;
+    vertexCount = 0;
     listeningOnPort = 9177;
     shaderErrored = false;
     showFreqGraph = false;
@@ -338,6 +339,9 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
     }
     if(addr == "/vertex"){
         string vertFile  = msg.getArgAsString(0);
+        string type  = msg.getArgAsString(1);
+        int count  = msg.getArgAsInt32(2);
+
         int found = vertFile.find_last_of("/");
         string vertPath = vertFile.substr(0, found);
         found = mainVert.find_last_of("/");
@@ -356,6 +360,7 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
         if(type == "points"){
             vertexType = GL_POINTS;
         }
+        vertexCount = count;
         mainVert = vertFile;
         isVertexDirty = true;
     }

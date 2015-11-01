@@ -17,6 +17,7 @@ class ofApp : public ofBaseApp{
     map<string, float> growthRate;
 
     int vertexType;
+    int vertexCount;
     ofx::IO::DirectoryWatcherManager watcher;
     ofx::IO::HiddenFileFilter fileFilter;
     ofShader shader;
