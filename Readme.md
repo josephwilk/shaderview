@@ -97,6 +97,9 @@ file will be watched for changes and auto-reloaded
 * "/shader-string" <StringValue:opengl-frag-shader>
 Load a string as a OpenGL shader
 
+* "/vertex <StringValue:full-filename-path> <StringValue:vertex-type> <IntValue:vertex-count>"
+Experimental support for just working with vertex part of shaders.
+
 
 * "/texture" <StringValue> <IntValue:ichannel-no>
 Load an image file as a texture in your shader. 
