@@ -123,6 +123,13 @@ void ofApp::update(){
     if(isVertexDirty){
         clearErrorLog();
         bool r = shader.setupShaderFromSource(GL_VERTEX_SHADER, prepareShader(loadFileShader(ofToDataPath(mainVert, true))));
+
+        if(!r){
+            shaderErrored = true;
+        }
+        else{
+            shaderErrored = false;
+        }
         shader.linkProgram();
         isVertexDirty = false;
         editor.loadFile(ofToDataPath("errors.log", true), 0);
