@@ -20,7 +20,7 @@ void ofApp::setup(){
     editor.addCommand('a', this, &ofApp::toggleEditor);
 
     
-    mainFrag    = "voc.glsl";
+    mainFrag    = "wave.glsl";
     mainVert    = "default.vert";
     currentAmp = 1.0;
     
