@@ -538,6 +538,9 @@ int ofApp::toVertexType(string thing){
     if(thing == "points"){
         type = GL_POINTS;
     }
+    if(thing == "triangles"){
+        type = GL_TRIANGLES;
+    }
     return type;
 }
 
