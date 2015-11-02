@@ -413,7 +413,7 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
 }
 
 void ofApp::onDirectoryWatcherItemModified(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt){
-    if (evt.item.path() != ofToDataPath("errors.log")){
+    if (evt.item.path() != ofToDataPath("errors.log", true)){
         string file = evt.item.path();
         
         if(file.rfind(".vert")){
