@@ -1,5 +1,4 @@
 uniform sampler2D iChannel0;
-uniform float     iVolume;
 uniform float     iExample;
 
 #define PI  3.14159  
