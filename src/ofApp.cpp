@@ -541,6 +541,12 @@ int ofApp::toVertexType(string thing){
     if(thing == "triangles"){
         type = GL_TRIANGLES;
     }
+    if(thing == "fan"){
+        type = GL_TRIANGLE_FAN;
+    }
+    if(thing == "strip"){
+        type = GL_TRIANGLE_STRIP;
+    }
     return type;
 }
 
