@@ -438,7 +438,16 @@ string ofApp::prepareShader(string shaderText){
 }
 
 string ofApp::prepareVertex(string vertexText){
-    vertexText = "#version 120\n" + vertexText;
+    vertexText =  STRINGIFY(
+                            uniform vec3 iResolution;
+                            uniform float iGlobalTime;
+                            uniform vec2 iMouse;
+                            uniform vec4 iDate;
+                            uniform float iVolume;
+                            ) + vertexText;
+    
+    vertexText =  "#extension GL_EXT_gpu_shader4 : require\n" + vertexText;
+    vertexText = "#version 120\n\n" + vertexText;
     return vertexText;
 }
 
