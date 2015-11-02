@@ -41,7 +41,7 @@ void ofApp::setup(){
     editor.update();
     
 	shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(loadFileShader(ofToDataPath(mainFrag, true))));
-    shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
+    shader.setupShaderFromSource(GL_VERTEX_SHADER,   prepareVertex(loadFileShader(ofToDataPath(mainVert, true))));
     shader.linkProgram();
     
     receiver.setup(listeningOnPort);
@@ -125,7 +125,7 @@ void ofApp::update(){
     
     if(isVertexDirty){
         clearErrorLog();
-        bool r = shader.setupShaderFromSource(GL_VERTEX_SHADER, prepareShader(loadFileShader(ofToDataPath(mainVert, true))));
+        bool r = shader.setupShaderFromSource(GL_VERTEX_SHADER, prepareVertex(loadFileShader(ofToDataPath(mainVert, true))));
 
         if(!r){
             shaderErrored = true;
@@ -142,7 +142,7 @@ void ofApp::update(){
         clearErrorLog();
         string oldShader = shader.getShaderSource(GL_FRAGMENT_SHADER);
         bool r = shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(loadFileShader(ofToDataPath(mainFrag, true))));
-        shader.setupShaderFromSource(GL_VERTEX_SHADER,   defaultVert);
+        shader.setupShaderFromSource(GL_VERTEX_SHADER, prepareVertex(loadFileShader(ofToDataPath(mainVert, true))));
         if(!r){
             shader.setupShaderFromSource(GL_FRAGMENT_SHADER, oldShader);
             shaderErrored = true;
@@ -191,6 +191,7 @@ void ofApp::draw(){
     }
     shader.setUniformTexture("iChannel0", mTexture, 0);
     
+    ofBackground(0,0,0);
     glBegin(GL_QUADS);
     glTexCoord2f(0,0); glVertex3f(0,0,0);
     glTexCoord2f(1,0); glVertex3f(ofGetWidth(),0,0);
@@ -198,6 +199,7 @@ void ofApp::draw(){
     glTexCoord2f(0,1); glVertex3f(0,ofGetHeight(),0);
     glEnd();
     
+    glDrawArrays(vertexType, 0, vertexCount);
     shader.end();
     mTexture.unbind();
     
@@ -322,6 +324,28 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
     }
     if(addr == "/shader"){ //Load a new shader
         string shaderFile  = msg.getArgAsString(0);
+        
+        if(msg.getNumArgs() >= 2){
+            mainVert    = msg.getArgAsString(1);
+            
+            if(msg.getNumArgs() >=3){
+                vertexType  = toVertexType(msg.getArgAsString(2));
+            }
+            else{
+                vertexType  = GL_POINTS;
+            }
+
+            if(msg.getNumArgs() >= 4){
+                vertexCount = msg.getArgAsInt32(3);
+            }
+            else{
+                vertexCount = 0;
+            }
+        }
+        else{
+            mainVert = "default.vert";
+        }
+        
         int found = shaderFile.find_last_of("/");
         string shaderPath = shaderFile.substr(0, found);
         found = mainFrag.find_last_of("/");
@@ -354,12 +378,7 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
             watcher.addPath(vertPath, true, &fileFilter);
         }
 
-        if(type == "lines"){
-            vertexType = GL_LINES;
-        }
-        if(type == "points"){
-            vertexType = GL_POINTS;
-        }
+        vertexType = toVertexType(type);
         vertexCount = count;
         mainVert = vertFile;
         isVertexDirty = true;
@@ -394,8 +413,18 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
 }
 
 void ofApp::onDirectoryWatcherItemModified(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt){
-    isShaderDirty = true;
-    ofLogNotice("Modified: " + evt.item.path());
+    if (evt.item.path() != ofToDataPath("errors.log")){
+        string file = evt.item.path();
+        
+        if(file.rfind(".vert")){
+            isVertexDirty = true;
+        }
+        
+        if(file.rfind(".glsl")){
+            isShaderDirty = true;
+        }
+        ofLogNotice("Modified: " + evt.item.path());
+    }
 }
 
 void ofApp::plot(vector<float>& buffer, float scale) {
@@ -499,6 +528,17 @@ void ofApp::keyPressed(int key){
         }
 
     }
+}
+
+int ofApp::toVertexType(string thing){
+    int type;
+    if(thing == "lines"){
+        type = GL_LINES;
+    }
+    if(thing == "points"){
+        type = GL_POINTS;
+    }
+    return type;
 }
 
 void ofApp::mouseMoved(int x, int y ){}

@@ -94,4 +94,7 @@ public:
     void onDirectoryWatcherError(const Poco::Exception& exc){
         ofLogError("ofApp::onDirectoryWatcherError") << "Error: " << exc.displayText();
     }
+    
+private:
+    int toVertexType(string thing);
 };
