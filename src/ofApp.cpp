@@ -383,6 +383,12 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
         mainVert = vertFile;
         isVertexDirty = true;
     }
+    if(addr == "/vertex-settings"){
+        string type  = msg.getArgAsString(0);
+        int count  = msg.getArgAsInt32(1);
+        vertexType = toVertexType(type);
+        vertexCount = count;
+    }
     if(addr == "/volume"){
         currentAmp = msg.getArgAsFloat(0);
     }
