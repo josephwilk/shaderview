@@ -5,7 +5,7 @@
 #include "ofxFft.h"
 #include "ofxEasyFft.h"
 #include "ofxOsc.h"
-#include "ofxEditor.h";
+#include "ofxEditor.h"
 #include "ofxPostProcessing.h"
 
 class ofApp : public ofBaseApp{
