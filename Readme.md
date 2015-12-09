@@ -101,6 +101,10 @@ Load a string as a OpenGL shader
 Experimental support for just working with vertex part of shaders.
 
 
+* "/vertex-settings" <StringValue:type> <IntValue:count>
+Supports changing parameters of the vertex phase without a pause for reloading.
+        
+
 * "/texture" <StringValue> <IntValue:ichannel-no>
 Load an image file as a texture in your shader. 
 Texture is defined as iChannel1/2/3 based on IntValue. 
