@@ -32,7 +32,7 @@ Download and Launch Shaderview.
 
 ### First simple Example
 
-Shaderview launches with a default opengl shader. 
+Shaderview launches with a default opengl shader.
 
 ```ruby
 uniform float iR;
@@ -58,7 +58,7 @@ require 'osc-ruby'
 
 ### Shaderview Supported Messages
 
-Shaderview opens an Osc Server listening on port 9177. 
+Shaderview opens an Osc Server listening on port 9177.
 The endpoints provided:
 
 ```
@@ -70,12 +70,12 @@ Set uniform to a float value
 
 
 * "/smoothed-uniform" <UniformName> <FloatValue>
-Move a uniform towards a float value (Fixed rate for now). 
+Move a uniform towards a float value (Fixed rate for now).
 Execute multiple times to eventually get to FloatValue.
 
 
 * "/decaying-uniform" <UniformName> <FloatValue> [FloatValue:decay-rate]
-Like /uniform but the value will automatically decay to 0. 
+Like /uniform but the value will automatically decay to 0.
 Decay rate defaults to 0.01 if not specified.
 
 * "/growing-uniform" <UniformName> <FloatValue> [FloatValue:growth-rate]
@@ -90,7 +90,7 @@ Growth+decay rate defaults to 0.01 if not specified.
 No fancy curves yet like Sin... todo
 
 * "/shader" <StringValue:full-filename-path>
-Load a file which contains an OpenGL shader. Once loaded the 
+Load a file which contains an OpenGL shader. Once loaded the
 file will be watched for changes and auto-reloaded
 
 
@@ -103,11 +103,11 @@ Experimental support for just working with vertex part of shaders.
 
 * "/vertex-settings" <StringValue:type> <IntValue:count>
 Supports changing parameters of the vertex phase without a pause for reloading.
-        
+
 
 * "/texture" <StringValue> <IntValue:ichannel-no>
-Load an image file as a texture in your shader. 
-Texture is defined as iChannel1/2/3 based on IntValue. 
+Load an image file as a texture in your shader.
+Texture is defined as iChannel1/2/3 based on IntValue.
 Add `uniform sampler2D iChannel1` to your shader.
 Comes packaged with some useful noise textures, just give the filename:
 "tex10.png, tex11.png, tex15.png, tex16.png"
@@ -117,7 +117,7 @@ https://github.com/josephwilk/shaderview/tree/master/bin/data/textures/tex15.png
 https://github.com/josephwilk/shaderview/tree/master/bin/data/textures/tex16.png
 
 * "/volume" <FloatValue>
-Sets iVolume in shader. Useful for say sending the 
+Sets iVolume in shader. Useful for say sending the
 volume from something like Sonic Pi
 ```
 
@@ -166,7 +166,7 @@ Xcode.
 
 ##### Ubuntu (Extremely experimental)
 
-Some notes from @mattrei on the process to get an install on Ubuntu:  
+Some notes from @mattrei on the process to get an install on Ubuntu:
 
 * ofxEditor: would not compile because in the src/ClipBoard.cpp the ClipBoard.h is spelled wrongly. Did a pull request already there. for now we have to fix it manually.
 
@@ -182,7 +182,7 @@ Inspired by Roger Allen's Shadertone: https://github.com/overtone/shadertone
 
 ##License
 
-Copyright © 2015-2016 Joseph Wilk
+Copyright © 2015-present Joseph Wilk
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
