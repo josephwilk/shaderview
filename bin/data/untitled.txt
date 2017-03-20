@@ -1,0 +1,19 @@
+require 'osc-ruby'
+unless defined?(SHADER_ROOT)
+  SHADER_ROOT = "/Users/josephwilk/Workspace/repl-electric/live-coding-space/lights/"
+end
+def shader(endpoint, *args)
+  if endpoint == :shader
+    args[0] = "#{SHADER_ROOT}/#{args[0]}"
+  end
+  endpoint = "/#{endpoint.to_s.gsub("suniform", "smoothed-uniform")}"
+  @client ||= OSC::Client.new('10.0.0.10', 9002)
+  begin
+    args = args.map{|a| a.is_a?(Symbol) ? a.to_s : a}
+    @client.send(OSC::Message.new(endpoint, *args))
+  rescue Exception 
+    puts "$!> Graphics not loaded"
+  end
+end
+
+shader(:shader, "nil.glsl")
