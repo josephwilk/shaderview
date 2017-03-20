@@ -5,3 +5,4 @@ ofxGui
 ofxIO
 ofxNetwork
 ofxOsc
+ofxPostProcessing

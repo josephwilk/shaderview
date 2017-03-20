@@ -6,6 +6,7 @@
 #include "ofxEasyFft.h"
 #include "ofxOsc.h"
 #include "ofxEditor.h"
+#include "ofxPostProcessing.h"
 
 class ofApp : public ofBaseApp{
     
@@ -25,7 +26,7 @@ class ofApp : public ofBaseApp{
     int plotHeight, bufferSize, w,h;
     ofFbo fbo;
     
-    //  ofxPostProcessing post;
+    ofxPostProcessing post;
     
     ofxOscReceiver receiver;
     
@@ -41,6 +42,7 @@ class ofApp : public ofBaseApp{
     bool isFullscreen;
     bool shaderErrored;
     bool showFreqGraph;
+    bool postFxMode;
     int listeningOnPort;
     
     int rBackground;

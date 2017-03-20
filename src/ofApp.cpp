@@ -18,6 +18,8 @@ void ofApp::setup(){
     gBackground = 0;
     bBackground = 0;
     
+    postFxMode = false;
+    
     cameraMode = false;
     
     textString = "";
@@ -26,7 +28,8 @@ void ofApp::setup(){
     
     renderSmallFont.loadFont("monof55.ttf", 30, true, true, true);
     renderFont.loadFont("monof55.ttf", 700, true, true, true);
-    
+
+    post.init(ofGetWidth(), ofGetHeight());
     
     ofDisableArbTex();
     
@@ -65,23 +68,8 @@ void ofApp::setup(){
     //   ofSetFrameRate(60);
     
     mTexture.allocate(512,2,GL_LUMINANCE, false);
+
     
-    /*
-     post.init(ofGetWidth(), ofGetHeight());
-     
-     post.setFlip(false);
-     post.createPass<FxaaPass>()->setEnabled(false);
-     post.createPass<BloomPass>()->setEnabled(false);
-     post.createPass<DofPass>()->setEnabled(false);
-     post.createPass<KaleidoscopePass>()->setEnabled(false);
-     post.createPass<NoiseWarpPass>()->setEnabled(false);
-     post.createPass<PixelatePass>()->setEnabled(false);
-     post.createPass<EdgePass>()->setEnabled(false);
-     post.createPass<VerticalTiltShifPass>()->setEnabled(false);
-     post.createPass<GodRaysPass>()->setEnabled(false);
-     post.createPass<LimbDarkeningPass>()->setEnabled(false);
-     post.createPass<RGBShiftPass>()->setEnabled(false);
-     */
     isShaderDirty = true;
     watcher.registerAllEvents(this);
     std::string folderToWatch = ofToDataPath("", true);
@@ -184,6 +172,11 @@ void ofApp::update(){
 }
 
 void ofApp::draw(){
+    
+    if(postFxMode){
+        post.begin();
+    }
+    
     fbo.begin();
     
     if(showFreqGraph){
@@ -227,7 +220,7 @@ void ofApp::draw(){
     glEnd();
     
     glDrawArrays(vertexType, 0, vertexCount);
-    
+        
     if (cameraMode){
         cam.draw(0, 0);
     }
@@ -259,6 +252,9 @@ void ofApp::draw(){
     
     
     fbo.end();
+    if(postFxMode){
+        post.end();
+    }
     fbo.draw(0,0,ofGetWidth(), ofGetHeight());
 }
 
@@ -495,6 +491,56 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
         
         
         ofLogNotice("Text change.");
+    }
+    if(addr == "/fx"){
+        
+        if(postFxMode){
+            postFxMode = false;
+            post.setFlip(false);
+            post.createPass<PixelatePass>()->setEnabled(false);
+            post.createPass<KaleidoscopePass>()->setEnabled(false);
+            post.createPass<RGBShiftPass>()->setEnabled(false);
+        }
+        else{
+            postFxMode = true;
+        }
+
+        if(postFxMode){
+          post.setFlip(true);
+        if(msg.getNumArgs() == 1){
+            string mode = msg.getArgAsString(0);
+            if(mode == "pixel"){
+               post.createPass<PixelatePass>()->setEnabled(true);
+            }
+            else{
+                post.createPass<PixelatePass>()->setEnabled(false);
+            }
+            if(mode == "kal"){
+                post.createPass<KaleidoscopePass>()->setEnabled(true);
+            }
+            else{
+                post.createPass<KaleidoscopePass>()->setEnabled(false);
+            }
+            if(mode == "rgb"){
+                post.createPass<RGBShiftPass>()->setEnabled(true);
+            }
+            else{
+                post.createPass<RGBShiftPass>()->setEnabled(false);
+            }
+        }
+        
+/*      post.createPass<FxaaPass>()->setEnabled(false);
+        post.createPass<BloomPass>()->setEnabled(false);
+        post.createPass<DofPass>()->setEnabled(false);
+        post.createPass<NoiseWarpPass>()->setEnabled(false);
+        post.createPass<EdgePass>()->setEnabled(false);
+        post.createPass<VerticalTiltShifPass>()->setEnabled(false);
+        post.createPass<GodRaysPass>()->setEnabled(false);
+        post.createPass<LimbDarkeningPass>()->setEnabled(false);
+        post.createPass<RGBShiftPass>()->setEnabled(false);
+ */
+        }
+
     }
     
     
