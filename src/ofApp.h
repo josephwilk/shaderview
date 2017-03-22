@@ -60,7 +60,7 @@ class ofApp : public ofBaseApp{
     ofVideoGrabber cam;
     
 public:
-    ofApp() : editor(2), editorVisible(false), isFullscreen(true) {}    bool isShaderDirty;
+    ofApp() : editor(3), editorVisible(false), isFullscreen(true) {}    bool isShaderDirty;
     bool isVertexDirty;
     void setup();
     void update();

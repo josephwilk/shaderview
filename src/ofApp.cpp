@@ -55,6 +55,7 @@ void ofApp::setup(){
     defaultVert = "#version 120\n" + defaultVert;
     
     editor.loadFile(ofToDataPath(mainFrag, true), 1);
+    editor.loadFile(ofToDataPath(mainVert, true), 2);
     editor.update();
     
     shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(loadFileShader(ofToDataPath(mainFrag, true))));
@@ -173,9 +174,6 @@ void ofApp::update(){
 
 void ofApp::draw(){
     
-    if(postFxMode){
-        post.begin();
-    }
     
     fbo.begin();
     
@@ -194,6 +192,9 @@ void ofApp::draw(){
     ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
     
     mTexture.bind();
+    if(postFxMode){
+        post.begin();
+    }
     shader.begin();
     
     float mx = mouseX / (float)ofGetWidth();
@@ -228,6 +229,9 @@ void ofApp::draw(){
     
     shader.end();
     mTexture.unbind();
+    if(postFxMode){
+        post.end();
+    }
     
     renderSmallFont.drawString(textSmallString, textStringWidth, textStringHeight);
     renderFont.drawString(textString, textStringWidth, textStringHeight);
@@ -252,9 +256,6 @@ void ofApp::draw(){
     
     
     fbo.end();
-    if(postFxMode){
-        post.end();
-    }
     fbo.draw(0,0,ofGetWidth(), ofGetHeight());
 }
 
@@ -393,6 +394,12 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
             else{
                 vertexCount = 0;
             }
+            
+            if(editorVisible){
+                editor.loadFile(ofToDataPath(mainVert, true), 2);
+                editor.update();
+            }
+
         }
         else{
             mainVert = "default.vert";
@@ -411,6 +418,12 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
         }
         
         mainFrag = shaderFile;
+        
+        if(editorVisible){
+            editor.loadFile(ofToDataPath(mainFrag, true), 1);
+            editor.update();
+        }
+        
         isShaderDirty = true;
     }
     if(addr == "/vertex"){
@@ -502,13 +515,23 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
             post.createPass<RGBShiftPass>()->setEnabled(false);
         }
         else{
+            post.reset();
             postFxMode = true;
         }
 
         if(postFxMode){
+           
           post.setFlip(true);
+            
+            
         if(msg.getNumArgs() == 1){
             string mode = msg.getArgAsString(0);
+            if(mode == "toon"){
+                post.createPass<ToonPass>()->setEnabled(true);
+            }
+            else{
+                post.createPass<ToonPass>()->setEnabled(false);
+            }
             if(mode == "pixel"){
                post.createPass<PixelatePass>()->setEnabled(true);
             }
@@ -527,6 +550,7 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
             else{
                 post.createPass<RGBShiftPass>()->setEnabled(false);
             }
+            
         }
         
 /*      post.createPass<FxaaPass>()->setEnabled(false);
@@ -633,7 +657,12 @@ void ofApp::toggleErrors(void * _o){
 }
 
 void ofApp::toggleEditorSave(){
-    editor.saveFile(ofToDataPath(mainFrag, true), 1);
+    if(editor.currentBuffer == 0){
+      editor.saveFile(ofToDataPath(mainFrag, true), 1);
+    }
+    else{
+      editor.saveFile(ofToDataPath(mainVert, true), 2);
+    }
 }
 
 void ofApp::keyPressed(int key){
