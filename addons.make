@@ -1,5 +1,5 @@
 ofxBeat
-ofxEditor
+ofxEmacsEditor
 ofxFft
 ofxGui
 ofxIO

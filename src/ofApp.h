@@ -5,7 +5,7 @@
 #include "ofxFft.h"
 #include "ofxEasyFft.h"
 #include "ofxOsc.h"
-#include "ofxEditor.h"
+#include "ofxEmacsEditor.h"
 #include "ofxPostProcessing.h"
 
 class ofApp : public ofBaseApp{
@@ -37,7 +37,7 @@ class ofApp : public ofBaseApp{
     string mainFrag;
     string mainVert;
     float currentAmp;
-    ofxEditor editor;
+    ofxEmacsEditor editor;
     bool editorVisible;
     bool isFullscreen;
     bool shaderErrored;
