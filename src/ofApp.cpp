@@ -233,6 +233,17 @@ void ofApp::draw(){
         post.end();
     }
     
+
+  if (editorVisible) {
+    ofSetOrientation(OF_ORIENTATION_DEFAULT, true);
+    editor.draw();
+    editor.update();
+  }
+  else{
+    ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
+  }
+
+
     renderSmallFont.drawString(textSmallString, textStringWidth, textStringHeight);
     renderFont.drawString(textString, textStringWidth, textStringHeight);
     
