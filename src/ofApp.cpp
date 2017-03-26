@@ -237,7 +237,7 @@ void ofApp::draw(){
   if (editorVisible) {
     ofSetOrientation(OF_ORIENTATION_DEFAULT, true);
     editor.draw();
-    editor.update();
+    //editor.update();
   }
   else{
     ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
