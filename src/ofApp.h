@@ -44,7 +44,9 @@ class ofApp : public ofBaseApp{
     bool showFreqGraph;
     bool postFxMode;
     int listeningOnPort;
-    
+
+    int prevKey;
+
     int rBackground;
     int gBackground;
     int bBackground;

@@ -35,8 +35,7 @@ void ofApp::setup(){
     
     editor.addCommand('e', this, &ofApp::toggleErrors);
     editor.addCommand('a', this, &ofApp::toggleEditor);
-    
-    
+
     mainFrag    = "wave.glsl";
     mainVert    = "default.vert";
     currentAmp = 1.0;
@@ -56,8 +55,7 @@ void ofApp::setup(){
     
     editor.loadFile(ofToDataPath(mainFrag, true), 1);
     editor.loadFile(ofToDataPath(mainVert, true), 2);
-    editor.update();
-    
+
     shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(loadFileShader(ofToDataPath(mainFrag, true))));
     shader.setupShaderFromSource(GL_VERTEX_SHADER,   prepareVertex(loadFileShader(ofToDataPath(mainVert, true))));
     shader.linkProgram();
@@ -173,10 +171,9 @@ void ofApp::update(){
 }
 
 void ofApp::draw(){
-    
-    
     fbo.begin();
-    
+
+
     if(showFreqGraph){
         ofBackground(0, 0, 0);
         ofPushMatrix();
@@ -189,14 +186,14 @@ void ofApp::draw(){
         ofDrawBitmapString(msg, ofGetWidth() - 80, ofGetHeight() - 20);
     }
     
-    ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
+    //ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
     
     mTexture.bind();
     if(postFxMode){
         post.begin();
     }
     shader.begin();
-    
+
     float mx = mouseX / (float)ofGetWidth();
     mx = ofClamp(mx, 0,1);
     float my = mouseY / (float)ofGetHeight();
@@ -225,14 +222,12 @@ void ofApp::draw(){
     if (cameraMode){
         cam.draw(0, 0);
     }
-    
-    
+
     shader.end();
     mTexture.unbind();
     if(postFxMode){
         post.end();
     }
-    
 
   if (editorVisible) {
     ofSetOrientation(OF_ORIENTATION_DEFAULT, true);
@@ -257,24 +252,13 @@ void ofApp::draw(){
     string msg = ofToString((int) ofGetFrameRate()) + " fps";
     ofDrawBitmapString(msg, ofGetWidth()-80, ofGetHeight()-20, 0);
     
-    if (editorVisible) {
-        ofSetOrientation(OF_ORIENTATION_DEFAULT, true);
-        editor.draw();
-    }
-    else{
-        ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
-    }
-    
-    
+
     fbo.end();
     fbo.draw(0,0,ofGetWidth(), ofGetHeight());
 }
 
 void ofApp::keyReleased(int key){
     switch (key) {
-        case ' ':
-            isShaderDirty = true;
-            break;
         case OF_KEY_F11:
             ofToggleFullscreen();
             ofHideCursor();
@@ -668,12 +652,14 @@ void ofApp::toggleErrors(void * _o){
 }
 
 void ofApp::toggleEditorSave(){
-    if(editor.currentBuffer == 0){
+    if(editor.currentBuffer == 1){
       editor.saveFile(ofToDataPath(mainFrag, true), 1);
+      isShaderDirty = true;
     }
-    else{
+    else if(editor.currentBuffer == 2){
       editor.saveFile(ofToDataPath(mainVert, true), 2);
-    }
+      isVertexDirty = true;
+    } 
 }
 
 void ofApp::keyPressed(int key){
@@ -681,8 +667,14 @@ void ofApp::keyPressed(int key){
     bool shift = (bool) (ofGetKeyPressed(OF_KEY_SHIFT));
     bool cmd   = (bool) (ofGetKeyPressed(OF_KEY_COMMAND));
     bool ctrl  = (bool) (ofGetKeyPressed(OF_KEY_CONTROL));
-    if(cmd && key == 's'){
-        toggleEditorSave();
+
+    //printf("key:%i\n",key);
+
+    if(ctrl && prevKey == 24 && key == 19){
+      toggleEditorSave();
+    }
+    else if(ctrl && key == 19){
+      toggleEditorSave();
     }
     else if(cmd && key == 'f'){
         ofToggleFullscreen();
@@ -702,6 +694,7 @@ void ofApp::keyPressed(int key){
         }
         
     }
+    prevKey = key;
 }
 
 int ofApp::toVertexType(string thing){
