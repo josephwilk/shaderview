@@ -216,9 +216,11 @@ void ofApp::draw(){
     glTexCoord2f(1,1); glVertex3f(ofGetWidth(),ofGetHeight(),0);
     glTexCoord2f(0,1); glVertex3f(0,ofGetHeight(),0);
     glEnd();
-    
-    glDrawArrays(vertexType, 0, vertexCount);
-        
+
+    if(!shaderErrored){
+      glDrawArrays(vertexType, 0, vertexCount);
+    }
+
     if (cameraMode){
         cam.draw(0, 0);
     }
