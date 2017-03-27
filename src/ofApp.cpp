@@ -651,6 +651,7 @@ void ofApp::toggleEditor(void * _o){
     ((ofApp *)_o)->editorVisible = !((ofApp *)_o)->editorVisible;
     ((ofApp *)_o)->editor.currentBuffer = 1;
     ((ofApp *)_o)->editor.loadFile(ofToDataPath(((ofApp *)_o)->mainFrag, true), 1);
+    ((ofApp *)_o)->editor.loadFile(ofToDataPath(((ofApp *)_o)->mainVert, true), 2);
 }
 
 void ofApp::toggleErrors(void * _o){
