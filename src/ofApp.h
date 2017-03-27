@@ -55,6 +55,7 @@ class ofApp : public ofBaseApp{
     string textSmallString;
 
     string oldShader;
+    string oldVert;
 
     int textStringWidth;
     int textStringHeight;
