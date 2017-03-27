@@ -3,8 +3,8 @@
 
 void ofApp::setup(){
     clearErrorLog();
-    ofSetLogLevel(OF_LOG_VERBOSE);
-    //ofLogToFile("errors.log", true);
+    ofSetLogLevel(OF_LOG_ERROR);
+    ofLogToFile("errors.log", true);
     
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     vertexType = GL_POINTS;
