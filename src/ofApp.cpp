@@ -138,6 +138,8 @@ void ofApp::update(){
     
     if(isVertexDirty){
         clearErrorLog();
+        //NOTE: While we don't need to do this, it seems to speed up the vertex changes reload time... So for speed of update
+        bool r2 = shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(loadFileShader(ofToDataPath(mainFrag, true))));
         bool r = shader.setupShaderFromSource(GL_VERTEX_SHADER, prepareVertex(loadFileShader(ofToDataPath(mainVert, true))));
         
         if(!r){
