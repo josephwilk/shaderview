@@ -155,7 +155,11 @@ void ofApp::update(){
     }
     if(isShaderDirty){
         clearErrorLog();
-        string oldShader = shader.getShaderSource(GL_FRAGMENT_SHADER);
+
+        if(!shaderErrored){
+          oldShader = shader.getShaderSource(GL_FRAGMENT_SHADER);
+        }
+
         bool r = shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(loadFileShader(ofToDataPath(mainFrag, true))));
         shader.setupShaderFromSource(GL_VERTEX_SHADER, prepareVertex(loadFileShader(ofToDataPath(mainVert, true))));
         if(!r){
