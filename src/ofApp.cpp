@@ -17,7 +17,9 @@ void ofApp::setup(){
     rBackground = 0;
     gBackground = 0;
     bBackground = 0;
-    
+
+    oldShader="";
+
     postFxMode = false;
     
     cameraMode = false;
@@ -382,26 +384,32 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
         string shaderFile  = msg.getArgAsString(0);
         
         if(msg.getNumArgs() >= 2){
-            mainVert    = msg.getArgAsString(1);
+          string newVert = msg.getArgAsString(1);
+
+          bool isNewVert = true;
+          if(mainVert == newVert){
+            isNewVert = false;
+          }
+          mainVert = newVert;
+
+          if(msg.getNumArgs() >=3){
+            vertexType  = toVertexType(msg.getArgAsString(2));
+          }
+          else{
+            vertexType  = GL_POINTS;
+          }
             
-            if(msg.getNumArgs() >=3){
-                vertexType  = toVertexType(msg.getArgAsString(2));
-            }
-            else{
-                vertexType  = GL_POINTS;
-            }
+          if(msg.getNumArgs() >= 4){
+            vertexCount = msg.getArgAsInt32(3);
+          }
+          else{
+            vertexCount = 0;
+          }
             
-            if(msg.getNumArgs() >= 4){
-                vertexCount = msg.getArgAsInt32(3);
-            }
-            else{
-                vertexCount = 0;
-            }
-            
-            if(editorVisible){
-                editor.loadFile(ofToDataPath(mainVert, true), 2);
-                editor.update();
-            }
+          if(editorVisible && isNewVert){
+            editor.loadFile(ofToDataPath(mainVert, true), 2);
+            editor.update();
+          }
 
         }
         else{
@@ -419,10 +427,14 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
         if(!watcher.isWatching(shaderPath)){
             watcher.addPath(shaderPath, true, &fileFilter);
         }
-        
+
+        bool isNewShader = true;
+        if(mainFrag == shaderFile && editorVisible){
+          isNewShader = false;
+        }
         mainFrag = shaderFile;
         
-        if(editorVisible){
+        if(editorVisible && isNewShader){
             editor.loadFile(ofToDataPath(mainFrag, true), 1);
             editor.update();
         }
@@ -668,7 +680,7 @@ void ofApp::toggleEditorSave(){
     else if(editor.currentBuffer == 2){
       editor.saveFile(ofToDataPath(mainVert, true), 2);
       isVertexDirty = true;
-    } 
+    }
 }
 
 void ofApp::keyPressed(int key){
