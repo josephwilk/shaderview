@@ -43,6 +43,7 @@ class ofApp : public ofBaseApp{
     bool shaderErrored;
     bool showFreqGraph;
     bool postFxMode;
+    bool isEditorInited;
     int listeningOnPort;
 
     int prevKey;
@@ -65,7 +66,7 @@ class ofApp : public ofBaseApp{
     ofVideoGrabber cam;
     
 public:
-    ofApp() : editor(3), editorVisible(false), isFullscreen(true) {}    bool isShaderDirty;
+    ofApp() : editor(3, "DroidSansMono.ttf"), editorVisible(true), isFullscreen(true) {}    bool isShaderDirty;
     bool isVertexDirty;
     void setup();
     void update();
@@ -89,7 +90,9 @@ public:
     
     void toggleEditorSave(void);
     void clearErrorLog(void);
-    
+  
+    void initEditor(void);
+
     static void toggleEditor(void *);
     static void toggleErrors(void *);
     

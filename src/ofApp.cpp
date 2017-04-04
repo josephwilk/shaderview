@@ -14,6 +14,7 @@ void ofApp::setup(){
     showFreqGraph = false;
     isFullscreen = true;
     isVertexDirty = false;
+    isEditorInited = false;
     rBackground = 0;
     gBackground = 0;
     bBackground = 0;
@@ -22,24 +23,25 @@ void ofApp::setup(){
     oldVert="";
 
     postFxMode = false;
-    
     cameraMode = false;
-    
+
     textString = "";
     textStringWidth = ofGetWidth()/2.0;
     textStringHeight = ofGetHeight()/2.0;
     
-    renderSmallFont.loadFont("monof55.ttf", 30, true, true, true);
-    renderFont.loadFont("monof55.ttf", 700, true, true, true);
+    //renderSmallFont.loadFont("monof55.ttf", 30, true, true, true);
+    //renderFont.loadFont("monof55.ttf", 700, true, true, true);
+    renderSmallFont.load("DroidSansMono.ttf", 30, true, true, true);
+    renderFont.load("DroidSansMono.ttf", 700, true, true, true);
+
+    //NOTE: For some reason, without this when deployed seperately we don't allocate the font for the editor....
+    editor.font.load("DroidSansMono.ttf", 20, true, true);
 
     post.init(ofGetWidth(), ofGetHeight());
     
     ofDisableArbTex();
-    
-    editor.addCommand('e', this, &ofApp::toggleErrors);
-    editor.addCommand('a', this, &ofApp::toggleEditor);
 
-    mainFrag    = "wave.glsl";
+    mainFrag    = "default.glsl";
     mainVert    = "default.vert";
     currentAmp = 1.0;
     
@@ -56,23 +58,19 @@ void ofApp::setup(){
     
     defaultVert = "#version 120\n" + defaultVert;
     
-    editor.loadFile(ofToDataPath(mainFrag, true), 1);
-    editor.loadFile(ofToDataPath(mainVert, true), 2);
+    editor.addCommand('e', this, &ofApp::toggleErrors);
+    editor.addCommand('a', this, &ofApp::toggleEditor);
+
+    initEditor();
+    editor.update();
 
     shader.setupShaderFromSource(GL_FRAGMENT_SHADER, prepareShader(loadFileShader(ofToDataPath(mainFrag, true))));
     shader.setupShaderFromSource(GL_VERTEX_SHADER,   prepareVertex(loadFileShader(ofToDataPath(mainVert, true))));
     shader.linkProgram();
     
     receiver.setup(listeningOnPort);
-    //ofAddListener(receiver.onMessageReceived, this, &ofApp::onMessageReceived);
-    
-    //  ofSetVerticalSync(true);
-    //   ofSetFrameRate(60);
-    
     mTexture.allocate(512,2,GL_LUMINANCE, false);
 
-    
-    isShaderDirty = true;
     watcher.registerAllEvents(this);
     std::string folderToWatch = ofToDataPath("", true);
     bool listExistingItemsOnStart = true;
@@ -186,8 +184,7 @@ void ofApp::update(){
 }
 
 void ofApp::draw(){
-    fbo.begin();
-
+  fbo.begin();
 
     if(showFreqGraph){
         ofBackground(0, 0, 0);
@@ -200,9 +197,7 @@ void ofApp::draw(){
         string msg = ofToString((int) ofGetFrameRate()) + " fps";
         ofDrawBitmapString(msg, ofGetWidth() - 80, ofGetHeight() - 20);
     }
-    
-    //ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
-    
+
     mTexture.bind();
     if(postFxMode){
         post.begin();
@@ -246,15 +241,16 @@ void ofApp::draw(){
         post.end();
     }
 
-  if (editorVisible) {
-    ofSetOrientation(OF_ORIENTATION_DEFAULT, true);
-    editor.draw();
-    //editor.update();
-  }
-  else{
-    ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
-  }
-
+    if (editorVisible) {
+      if(!isEditorInited){
+        editor.update();
+        isEditorInited = true;
+      }
+      editor.draw();
+    }
+    else{
+      ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
+    }
 
     renderSmallFont.drawString(textSmallString, textStringWidth, textStringHeight);
     renderFont.drawString(textString, textStringWidth, textStringHeight);
@@ -668,9 +664,25 @@ void ofApp::clearErrorLog(void){
 
 void ofApp::toggleEditor(void * _o){
     ((ofApp *)_o)->editorVisible = !((ofApp *)_o)->editorVisible;
-    ((ofApp *)_o)->editor.currentBuffer = 1;
     ((ofApp *)_o)->editor.loadFile(ofToDataPath(((ofApp *)_o)->mainFrag, true), 1);
     ((ofApp *)_o)->editor.loadFile(ofToDataPath(((ofApp *)_o)->mainVert, true), 2);
+
+  if (((ofApp *)_o)->editorVisible) {
+    ofSetOrientation(OF_ORIENTATION_DEFAULT, true);
+    ((ofApp *)_o)->editor.update();
+  }
+  else{
+    ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
+  }
+}
+
+void ofApp::initEditor(void){
+  editor.loadFile(ofToDataPath(mainFrag, true), 1);
+  editor.loadFile(ofToDataPath(mainVert, true), 2);
+  ofSetOrientation(OF_ORIENTATION_DEFAULT, true);
+  editor.currentBuffer = 1;
+  editorVisible = true;
+  editor.update();
 }
 
 void ofApp::toggleErrors(void * _o){
