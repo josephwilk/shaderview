@@ -271,25 +271,29 @@ void ofApp::draw(){
 }
 
 void ofApp::keyReleased(int key){
+  bool cmd   = (bool) (ofGetKeyPressed(OF_KEY_COMMAND));
+  if (cmd && key ==  13){
+    ofToggleFullscreen();
+    ofHideCursor();
+    isFullscreen= true;
+    editor.update();
+  }
+  else{
     switch (key) {
-        case OF_KEY_F11:
-            ofToggleFullscreen();
-            ofHideCursor();
-            isFullscreen= true;
-            break;
-        case OF_KEY_F12:
-            if(cameraMode== true){
-                cam.close();
-                cameraMode = false;
-            }
-            else{
-                cam.setup(1280, 720);
-                //cam.listDevices();
-                cam.setDeviceID(0);
-                cameraMode = true;
-            }
-        default:
-            break;
+          case OF_KEY_F12:
+              if(cameraMode== true){
+                  cam.close();
+                  cameraMode = false;
+              }
+              else{
+                  cam.setup(1280, 720);
+                  //cam.listDevices();
+                  cam.setDeviceID(0);
+                  cameraMode = true;
+              }
+          default:
+              break;
+      }
     }
 }
 
