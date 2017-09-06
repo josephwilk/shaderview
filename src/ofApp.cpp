@@ -648,6 +648,7 @@ string ofApp::prepareShader(string shaderText){
                             uniform vec2 iMouse;
                             uniform vec4 iDate;
                             uniform float iVolume;
+
                             ) + shaderText;
     
     shaderText = "#version 120\n" + shaderText;
@@ -661,6 +662,7 @@ string ofApp::prepareVertex(string vertexText){
                             uniform vec2 iMouse;
                             uniform vec4 iDate;
                             uniform float iVolume;
+                            
                             ) + vertexText;
     
     vertexText =  "#extension GL_EXT_gpu_shader4 : require\n" + vertexText;
