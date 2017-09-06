@@ -642,13 +642,9 @@ string ofApp::loadFileShader(string path){
 }
 
 string ofApp::prepareShader(string shaderText){
-    shaderText =  STRINGIFY(
-                            uniform vec3 iResolution;
-                            uniform float iGlobalTime;
-                            uniform vec2 iMouse;
-                            uniform vec4 iDate;
-                            uniform float iVolume;
-
+    shaderText =  "\n" + shaderText;
+    shaderText =  STRINGIFY(  
+                            uniform vec3 iResolution;uniform float iGlobalTime;uniform vec2 iMouse;uniform vec4 iDate;uniform float iVolume;
                             ) + shaderText;
     
     shaderText = "#version 120\n" + shaderText;
@@ -656,13 +652,9 @@ string ofApp::prepareShader(string shaderText){
 }
 
 string ofApp::prepareVertex(string vertexText){
+    vertexText = "\n" + vertexText;
     vertexText =  STRINGIFY(
-                            uniform vec3 iResolution;
-                            uniform float iGlobalTime;
-                            uniform vec2 iMouse;
-                            uniform vec4 iDate;
-                            uniform float iVolume;
-                            
+                            uniform vec3 iResolution;uniform float iGlobalTime;uniform vec2 iMouse;uniform vec4 iDate;uniform float iVolume;
                             ) + vertexText;
     
     vertexText =  "#extension GL_EXT_gpu_shader4 : require\n" + vertexText;
