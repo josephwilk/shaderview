@@ -535,6 +535,7 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
             post.createPass<PixelatePass>()->setEnabled(false);
             post.createPass<KaleidoscopePass>()->setEnabled(false);
             post.createPass<RGBShiftPass>()->setEnabled(false);
+            post.createPass<BloomPass>()->setEnabled(false);
         }
         else{
             post.reset();
@@ -548,6 +549,13 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
             
         if(msg.getNumArgs() == 1){
             string mode = msg.getArgAsString(0);
+
+            if(mode == "bloom"){
+              post.createPass<BloomPass>()->setEnabled(true);
+            }
+            else{
+              post.createPass<BloomPass>()->setEnabled(false);
+            }
             if(mode == "toon"){
                 post.createPass<ToonPass>()->setEnabled(true);
             }
