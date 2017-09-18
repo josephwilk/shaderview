@@ -270,7 +270,6 @@ void ofApp::draw(){
   string msg = ofToString((int) ofGetFrameRate()) + " fps";
   ofDrawBitmapString(msg, ofGetWidth()-80, ofGetHeight()-20, 0);
 
-
   fbo.end();
   fbo.draw(0,0,ofGetWidth(), ofGetHeight());
 }
@@ -507,29 +506,33 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
     }
   }
   if(addr == "/echo"){
-    textString = msg.getArgAsString(0);
+    string size = msg.getArgAsString(0);
+    textString = msg.getArgAsString(1);
 
-    if(msg.getNumArgs() == 1){
-      textStringWidth = ofGetWidth()/2.0;
-      textStringHeight = ofGetHeight()/2.0;
-    }
-
-    if(msg.getNumArgs() > 1){
-      textStringWidth = msg.getArgAsInt(1);
-      textStringHeight = ofGetHeight()/2.0;
-    }
-    if(msg.getNumArgs() > 2){
-      textStringHeight = msg.getArgAsInt(2);
-    }
-    if(msg.getNumArgs() > 3){
+    if(size == "small"){
       textSmallString = textString;
       textString = "";
-    }else{
+    }
+    else{
       textSmallString = "";
       textString = textString;
     }
 
+    if(msg.getNumArgs() == 2){
+      textStringWidth = ofGetWidth()/2.0;
+      textStringHeight = ofGetHeight()/2.0;
+    }
 
+    if(msg.getNumArgs() > 3){
+      textStringWidth = msg.getArgAsInt(1);
+      textStringHeight = ofGetHeight()/2.0;
+    }
+    if(msg.getNumArgs() > 4){
+      textStringHeight = msg.getArgAsInt(2);
+    }
+    if(msg.getNumArgs() == 7){
+      textColor = ofColor(msg.getArgAsInt(4),msg.getArgAsInt(5),msg.getArgAsInt(6));
+    }
     ofLogNotice("Text change.");
   }
   if(addr == "/fx"){
@@ -548,9 +551,7 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
     }
 
     if(postFxMode){
-
       post.setFlip(true);
-
 
       if(msg.getNumArgs() == 1){
         string mode = msg.getArgAsString(0);
@@ -590,22 +591,31 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
         else{
           post.createPass<RGBShiftPass>()->setEnabled(false);
         }
-        if(mode == ""){
-
+        if(mode == "zoom"){
+          post.createPass<ZoomBlurPass>()->setEnabled(true);
         }
-
+        else{
+          post.createPass<ZoomBlurPass>()->setEnabled(false);
+        }
+        if(mode == "tube"){
+          post.createPass<TubePass>()->setEnabled(true);
+        }
+        else{
+          post.createPass<TubePass>()->setEnabled(false);
+        }
+        if(mode == "vts"){
+          post.createPass<VerticalTiltShifPass>()->setEnabled(true);
+        }
+        else{
+          post.createPass<VerticalTiltShifPass>()->setEnabled(false);
+        }
+        if(mode == "bleach"){
+          post.createPass<BleachBypassPass>()->setEnabled(true);
+        }
+        else{
+          post.createPass<BleachBypassPass>()->setEnabled(false);
+        }
       }
-
-      /*      post.createPass<FxaaPass>()->setEnabled(false);
-       post.createPass<BloomPass>()->setEnabled(false);
-       post.createPass<DofPass>()->setEnabled(false);
-       post.createPass<NoiseWarpPass>()->setEnabled(false);
-       post.createPass<EdgePass>()->setEnabled(false);
-       post.createPass<VerticalTiltShifPass>()->setEnabled(false);
-       post.createPass<GodRaysPass>()->setEnabled(false);
-       post.createPass<LimbDarkeningPass>()->setEnabled(false);
-       post.createPass<RGBShiftPass>()->setEnabled(false);
-       */
     }
 
   }
