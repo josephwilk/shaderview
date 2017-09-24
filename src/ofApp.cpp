@@ -38,10 +38,6 @@ void ofApp::setup(){
   //renderSmallFont.load("erbos_draco_1st_nbp.ttf", 10, true, true, true);
   renderSmallFont.load("erbos_draco_1st_open_nbp.ttf", 7, true, true, true);
 
-
-
-
-
   renderFont.load("DroidSansMono.ttf", 40, true, true, true);
 
   //NOTE: For some reason, without this when deployed seperately we don't allocate the font for the editor....
@@ -199,7 +195,6 @@ void ofApp::update(){
 void ofApp::draw(){
   fbo.begin();
 
-
   if(showFreqGraph){
     ofBackground(0, 0, 0);
     ofPushMatrix();
@@ -233,12 +228,6 @@ void ofApp::draw(){
   shader.setUniformTexture("iChannel0", mTexture, 0);
 
   ofBackground(rBackground,gBackground,bBackground);
-  //ofNoFill();
-  ofSetColor(255,255,255,100);
-  ofSetLineWidth(1);
-  ofSetCircleResolution(60);
-  ofCircle(ofGetWidth()/2,ofGetHeight()/2,ofGetHeight()/2);
-
 
   glBegin(GL_QUADS);
   glTexCoord2f(0,0); glVertex3f(0,0,0);
@@ -268,9 +257,6 @@ void ofApp::draw(){
     }
     editor.draw();
   }
-  else{
-    //ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
-  }
 
   if (shaderErrored){
     string errorMsg = "ERROR";
@@ -281,18 +267,6 @@ void ofApp::draw(){
 
   string msg = ofToString((int) ofGetFrameRate()) + " fps";
   ofDrawBitmapString(msg, ofGetWidth()-80, 20, 0);
-
-  /*
-  if(textColor.a > 0.0 ){
-    textColor.a = textColor.a*0.9999;
-    ofSetColor(textColor);
-    //renderSmallFont.drawString(textSmallString, textStringWidth, textStringHeight);
-   }
-  else{
-    textSmallString = "";
-  }
-  */
-
 
   vector<string>::iterator iter;
   vector<int>::iterator iterOp = textBufferOpacity.begin();;
@@ -311,7 +285,6 @@ void ofApp::draw(){
   }
 
   renderFont.drawString(textString, textStringWidth, textStringHeight);
-
 
   fbo.end();
   fbo.draw(0,0,ofGetWidth(), ofGetHeight());
@@ -575,22 +548,11 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
 
         textBufferOpacity.erase(itOp+place);
         textBufferOpacity.insert(itOp+place,textColor.a);
-
-        //textBufferSize.erase(itSize+place);
-        //textBufferSize.insert(itSize+place,rand() % 12 + 4);
       }
       else{
         textBuffer.insert (it,textString);
         textBufferOpacity.insert(itOp,textColor.a);
-        //textBufferSize.insert(itSize,rand() % 12 + 4);
       }
-
-      //textSmallString = "";
-      //vector<string>::iterator iter;
-      //for(iter = textBuffer.begin(); iter != textBuffer.end(); iter++ ) {
-        //textSmallString += *iter + "\n";
-      //}
-
       textString="";
     }
     else{
@@ -784,18 +746,13 @@ void ofApp::toggleEditor(void * _o){
 
 
   if (((ofApp *)_o)->editorVisible) {
-    //ofSetOrientation(OF_ORIENTATION_DEFAULT, true);
     ((ofApp *)_o)->editor.update();
-  }
-  else{
-    //ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
   }
 }
 
 void ofApp::initEditor(void){
   editor.loadFile(ofToDataPath(mainFrag, true), 1);
   editor.loadFile(ofToDataPath(mainVert, true), 2);
-  //ofSetOrientation(OF_ORIENTATION_DEFAULT, true);
   editor.currentBuffer = 1;
   editorVisible = true;
   editor.update();
