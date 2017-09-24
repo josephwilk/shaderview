@@ -1,4 +1,6 @@
 #include "ofApp.h"
+#include <vector>
+#include <string.h>
 #define STRINGIFY(A) #A
 
 void ofApp::setup(){
@@ -30,10 +32,15 @@ void ofApp::setup(){
   textStringWidth = ofGetWidth()/2.0;
   textStringHeight = ofGetHeight()/2.0;
   textColor = ofColor(255,255,255,255);
+
   //renderSmallFont.loadFont("monof55.ttf", 30, true, true, true);
   //renderFont.loadFont("monof55.ttf", 700, true, true, true);
   //renderSmallFont.load("erbos_draco_1st_nbp.ttf", 10, true, true, true);
-  renderSmallFont.load("erbos_draco_1st_open_nbp.ttf", 4, true, true, true);
+  renderSmallFont.load("erbos_draco_1st_open_nbp.ttf", 7, true, true, true);
+
+
+
+
 
   renderFont.load("DroidSansMono.ttf", 40, true, true, true);
 
@@ -79,6 +86,8 @@ void ofApp::setup(){
   bool listExistingItemsOnStart = true;
   watcher.addPath(folderToWatch, listExistingItemsOnStart, &fileFilter);
 
+
+  ofSetOrientation(OF_ORIENTATION_DEFAULT, true);
   fft.setup(16384);
 }
 
@@ -190,6 +199,7 @@ void ofApp::update(){
 void ofApp::draw(){
   fbo.begin();
 
+
   if(showFreqGraph){
     ofBackground(0, 0, 0);
     ofPushMatrix();
@@ -223,6 +233,12 @@ void ofApp::draw(){
   shader.setUniformTexture("iChannel0", mTexture, 0);
 
   ofBackground(rBackground,gBackground,bBackground);
+  //ofNoFill();
+  ofSetColor(255,255,255,100);
+  ofSetLineWidth(1);
+  ofSetCircleResolution(60);
+  ofCircle(ofGetWidth()/2,ofGetHeight()/2,ofGetHeight()/2);
+
 
   glBegin(GL_QUADS);
   glTexCoord2f(0,0); glVertex3f(0,0,0);
@@ -253,22 +269,49 @@ void ofApp::draw(){
     editor.draw();
   }
   else{
-    ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
+    //ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
   }
-
-  ofSetColor(textColor);
-  renderSmallFont.drawString(textSmallString, textStringWidth, textStringHeight);
-  renderFont.drawString(textString, textStringWidth, textStringHeight);
 
   if (shaderErrored){
     string errorMsg = "ERROR";
     ofColor red(255, 0, 0);
     ofColor black(0, 0, 0);
-    ofDrawBitmapStringHighlight(errorMsg, ofGetWidth() - 80, 20.0, red, black);
+    ofDrawBitmapStringHighlight(errorMsg, ofGetWidth() - 80, 0.0, red, black);
   }
 
   string msg = ofToString((int) ofGetFrameRate()) + " fps";
-  ofDrawBitmapString(msg, ofGetWidth()-80, ofGetHeight()-20, 0);
+  ofDrawBitmapString(msg, ofGetWidth()-80, 20, 0);
+
+  /*
+  if(textColor.a > 0.0 ){
+    textColor.a = textColor.a*0.9999;
+    ofSetColor(textColor);
+    //renderSmallFont.drawString(textSmallString, textStringWidth, textStringHeight);
+   }
+  else{
+    textSmallString = "";
+  }
+  */
+
+
+  vector<string>::iterator iter;
+  vector<int>::iterator iterOp = textBufferOpacity.begin();;
+  int i=0;
+  for(iter = textBuffer.begin(); iter != textBuffer.end(); iter++ ) {
+    textColor.a = textBufferOpacity[i];
+    if (textColor.a > 0.01){
+      string text = *iter;
+      textColor.a = textColor.a*0.999999;
+      ofSetColor(textColor);
+      renderSmallFont.drawString(text, textStringWidth, textStringHeight+i*15);
+      textBufferOpacity.erase(iterOp+i);
+      textBufferOpacity.insert (iterOp+i,textColor.a);
+    }
+    i++;
+  }
+
+  renderFont.drawString(textString, textStringWidth, textStringHeight);
+
 
   fbo.end();
   fbo.draw(0,0,ofGetWidth(), ofGetHeight());
@@ -505,13 +548,50 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
       shader.setUniformTexture(channel, image.getTextureReference(), 1);
     }
   }
+  if(addr == "/clear"){
+    textSmallString = "";
+    textString = "";
+    textBuffer.clear();
+  }
   if(addr == "/echo"){
     string size = msg.getArgAsString(0);
-    textString = msg.getArgAsString(1);
+    textString =  msg.getArgAsString(1);
+
+    if(msg.getNumArgs() == 8){
+      textColor = ofColor(msg.getArgAsInt(4),msg.getArgAsInt(5),msg.getArgAsInt(6),msg.getArgAsInt(7));
+    }
 
     if(size == "small"){
-      textSmallString = textString;
-      textString = "";
+      std::vector<string>::iterator it;
+      std::vector<int>::iterator itOp;
+      //std::vector<int>::iterator itSize;
+      it = textBuffer.begin();
+      //itSize = textBufferSize.begin();
+      itOp = textBufferOpacity.begin();
+      if(textBuffer.size() > 130){
+        int place = rand() % 130;
+        textBuffer.erase(it+place);
+        textBuffer.insert (it+place,textString);
+
+        textBufferOpacity.erase(itOp+place);
+        textBufferOpacity.insert(itOp+place,textColor.a);
+
+        //textBufferSize.erase(itSize+place);
+        //textBufferSize.insert(itSize+place,rand() % 12 + 4);
+      }
+      else{
+        textBuffer.insert (it,textString);
+        textBufferOpacity.insert(itOp,textColor.a);
+        //textBufferSize.insert(itSize,rand() % 12 + 4);
+      }
+
+      //textSmallString = "";
+      //vector<string>::iterator iter;
+      //for(iter = textBuffer.begin(); iter != textBuffer.end(); iter++ ) {
+        //textSmallString += *iter + "\n";
+      //}
+
+      textString="";
     }
     else{
       textSmallString = "";
@@ -522,17 +602,23 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
       textStringWidth = ofGetWidth()/2.0;
       textStringHeight = ofGetHeight()/2.0;
     }
-
     if(msg.getNumArgs() > 3){
-      textStringWidth = msg.getArgAsInt(1);
+      textStringWidth = msg.getArgAsInt(2);
       textStringHeight = ofGetHeight()/2.0;
     }
     if(msg.getNumArgs() > 4){
-      textStringHeight = msg.getArgAsInt(2);
+      textStringHeight = msg.getArgAsInt(3);
+    }
+    if(msg.getNumArgs() == 5){
+      textColor = ofColor(msg.getArgAsInt(4),0,0);
+    }
+    if(msg.getNumArgs() == 6){
+      textColor = ofColor(msg.getArgAsInt(4),msg.getArgAsInt(5),0);
     }
     if(msg.getNumArgs() == 7){
       textColor = ofColor(msg.getArgAsInt(4),msg.getArgAsInt(5),msg.getArgAsInt(6));
     }
+
     ofLogNotice("Text change.");
   }
   if(addr == "/fx"){
@@ -696,19 +782,20 @@ void ofApp::toggleEditor(void * _o){
   ((ofApp *)_o)->editor.loadFile(ofToDataPath(((ofApp *)_o)->mainFrag, true), 1);
   ((ofApp *)_o)->editor.loadFile(ofToDataPath(((ofApp *)_o)->mainVert, true), 2);
 
+
   if (((ofApp *)_o)->editorVisible) {
-    ofSetOrientation(OF_ORIENTATION_DEFAULT, true);
+    //ofSetOrientation(OF_ORIENTATION_DEFAULT, true);
     ((ofApp *)_o)->editor.update();
   }
   else{
-    ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
+    //ofSetOrientation(OF_ORIENTATION_DEFAULT, false);
   }
 }
 
 void ofApp::initEditor(void){
   editor.loadFile(ofToDataPath(mainFrag, true), 1);
   editor.loadFile(ofToDataPath(mainVert, true), 2);
-  ofSetOrientation(OF_ORIENTATION_DEFAULT, true);
+  //ofSetOrientation(OF_ORIENTATION_DEFAULT, true);
   editor.currentBuffer = 1;
   editorVisible = true;
   editor.update();

@@ -7,6 +7,7 @@
 #include "ofxOsc.h"
 #include "ofxEmacsEditor.h"
 #include "ofxPostProcessing.h"
+#include "ofMain.h"
 
 class ofApp : public ofBaseApp{
 
@@ -34,6 +35,9 @@ class ofApp : public ofBaseApp{
   ofTrueTypeFont renderFont;
   ofTrueTypeFont renderSmallFont;
   ofColor textColor;
+  vector<string> textBuffer;
+  vector<int> textBufferOpacity;
+  vector<int> textBufferSize;
 
   string defaultVert;
   string mainFrag;
