@@ -180,7 +180,7 @@ Some notes from @mattrei on the process to get an install on Ubuntu:
 
 Inspired by Roger Allen's Shadertone: https://github.com/overtone/shadertone
 
-##License
+## License
 
 Copyright © 2015-present Joseph Wilk
 
