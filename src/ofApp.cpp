@@ -28,7 +28,7 @@ void ofApp::setup(){
   postFxMode = false;
   cameraMode = false;
 
-  BloomPass::Ptr b;
+  BloomPass::Ptr bloomFx;
 
   textString = "";
   textStringWidth = ofGetWidth()/2.0;
@@ -597,97 +597,87 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
     ofLogNotice("Text change.");
   }
   if(addr == "/bloom"){
-    if (b != NULL){
+    if (bloomFx != NULL){
       float factor = msg.getArgAsFloat(0);
-      b->ping(factor);
+      bloomFx->ping(factor);
     }
   }
   if(addr == "/fx"){
-    bool compositeFx = false;
-    if(msg.getNumArgs() > 1){
-      compositeFx = msg.getArgAsBool(1);
-    }
-
-    if(!compositeFx){
-      if(postFxMode){
-        postFxMode = false;
+    postFxMode = true;
+    bool state = true;
+    if(msg.getNumArgs() >= 1){
+      if(msg.getNumArgs() > 1){
+        state = msg.getArgAsBool(1);
       }
-      else{
-        post.reset();
-        postFxMode = true;
-      }
-    }
 
-    if(postFxMode){
-      if(msg.getNumArgs() >= 1){
-        string mode = msg.getArgAsString(0);
-        if(mode == "rim"){
-          post.createPass<RimHighlightingPass>()->setEnabled(true);
-        }
-        else{
-          post.createPass<RimHighlightingPass>()->setEnabled(false);
-        }
-        if(mode == "bloom"){
-          b = post.createPass<BloomPass>();
-          b->setEnabled(true);
-        }
-        else{
-          post.createPass<BloomPass>()->setEnabled(false);
-        }
-        if(mode == "toon"){
-          post.createPass<ToonPass>()->setEnabled(true);
-        }
-        else{
-          post.createPass<ToonPass>()->setEnabled(false);
-        }
-        if(mode == "pixel"){
-          post.createPass<PixelatePass>()->setEnabled(true);
-        }
-        else{
-          post.createPass<PixelatePass>()->setEnabled(false);
-        }
-        if(mode == "kal"){
-          post.createPass<KaleidoscopePass>()->setEnabled(true);
-        }
-        else{
-          post.createPass<KaleidoscopePass>()->setEnabled(false);
-        }
-        if(mode == "rgb"){
-          post.createPass<RGBShiftPass>()->setEnabled(true);
-        }
-        else{
-          post.createPass<RGBShiftPass>()->setEnabled(false);
-        }
-        if(mode == "zoom"){
-          post.createPass<ZoomBlurPass>()->setEnabled(true);
-        }
-        else{
-          post.createPass<ZoomBlurPass>()->setEnabled(false);
-        }
-        if(mode == "tube"){
-          post.createPass<TubePass>()->setEnabled(true);
-        }
-        else{
-          post.createPass<TubePass>()->setEnabled(false);
-        }
-        if(mode == "vts"){
-          post.createPass<VerticalTiltShifPass>()->setEnabled(true);
-        }
-        else{
-          post.createPass<VerticalTiltShifPass>()->setEnabled(false);
-        }
-        if(mode == "bleach"){
-          post.createPass<BleachBypassPass>()->setEnabled(true);
-        }
-        else{
-          post.createPass<BleachBypassPass>()->setEnabled(false);
-        }
+      string mode = msg.getArgAsString(0);
+      if(activeFX[mode] != state){
+        fxFlip(mode, state);
+        activeFX[mode] = state;
       }
     }
-
   }
+}
 
+void ofApp::fxFlip(string mode, bool state){
 
+  if(mode == "rim"){
+    post.createPass<RimHighlightingPass>()->setEnabled(state);
+  }
+  if(mode == "bloom"){
+    if(bloomFx == NULL){
+      bloomFx = post.createPass<BloomPass>();
+    }
+    bloomFx->setEnabled(state);
+  }
+  if(mode == "toon"){
+    if(toonFx == NULL){
+      toonFx = post.createPass<ToonPass>();
+    }
+    toonFx->setEnabled(state);
+  }
+  if(mode == "pixel"){
+    if(pixelFx == NULL){
+      pixelFx = post.createPass<PixelatePass>();
+    }
+    pixelFx->setEnabled(state);
+  }
+  if(mode == "kal"){
+    if(kalFx == NULL){
+      kalFx = post.createPass<KaleidoscopePass>();
+    }
+    kalFx->setEnabled(state);
+  }
+  if(mode == "rgb"){
+    if(rgbFx == NULL){
+      rgbFx = post.createPass<RGBShiftPass>();
+    }
+    rgbFx->setEnabled(state);
+  }
+  if(mode == "zoom"){
+    if(zoomFx == NULL){
+      zoomFx = post.createPass<ZoomBlurPass>();
+    }
+    zoomFx->setEnabled(state);
+  }
+  if(mode == "tube"){
+    if(tubeFx == NULL){
+      tubeFx = post.createPass<TubePass>();
+    }
+    tubeFx->setEnabled(state);
+  }
+  if(mode == "vts"){
+    if(vtsFx == NULL){
+      vtsFx = post.createPass<VerticalTiltShifPass>();
+    }
+    vtsFx->setEnabled(state);
+  }
+  if(mode == "bleach"){
+    if(bleachFx == NULL){
+      bleachFx = post.createPass<BleachBypassPass>();
+    }
+    bleachFx->setEnabled(state);
+  }
 }
 
 void ofApp::onDirectoryWatcherItemModified(const ofx::IO::DirectoryWatcherManager::DirectoryEvent& evt){

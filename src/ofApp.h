@@ -18,7 +18,17 @@ class ofApp : public ofBaseApp{
   map<string, float> growthRate;
 
 
-  BloomPass::Ptr b;
+  BloomPass::Ptr bloomFx;
+  ToonPass::Ptr toonFx;
+  TubePass::Ptr tubeFx;
+  PixelatePass::Ptr pixelFx;
+  KaleidoscopePass::Ptr kalFx;
+  RGBShiftPass::Ptr rgbFx;
+  ZoomBlurPass::Ptr zoomFx;
+  VerticalTiltShifPass::Ptr vtsFx;
+  BleachBypassPass::Ptr bleachFx;
+
+
   int x,y;
   int vertexType;
   int vertexCount;
@@ -31,6 +41,7 @@ class ofApp : public ofBaseApp{
   ofFbo fbo;
 
   ofxPostProcessing post;
+  map<string, bool> activeFX;
 
   ofxOscReceiver receiver;
 
@@ -128,4 +139,5 @@ public:
 
 private:
   int toVertexType(string thing);
+  void fxFlip(string mode, bool state);
 };
