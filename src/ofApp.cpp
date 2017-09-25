@@ -28,6 +28,8 @@ void ofApp::setup(){
   postFxMode = false;
   cameraMode = false;
 
+  BloomPass::Ptr b;
+
   textString = "";
   textStringWidth = ofGetWidth()/2.0;
   textStringHeight = ofGetHeight()/2.0;
@@ -43,9 +45,9 @@ void ofApp::setup(){
   //NOTE: For some reason, without this when deployed seperately we don't allocate the font for the editor....
   editor.font.load("DroidSansMono.ttf", 20, true, true);
 
-  post.init(ofGetWidth(), ofGetHeight());
-
   ofDisableArbTex();
+
+  post.init(ofGetWidth(), ofGetHeight(), false);
 
   mainFrag    = "default.glsl";
   mainVert    = "default.vert";
@@ -79,8 +81,17 @@ void ofApp::setup(){
   bool listExistingItemsOnStart = true;
   watcher.addPath(folderToWatch, listExistingItemsOnStart, &fileFilter);
 
+  y = ofNextPow2(ofGetWidth());
+  x = ofNextPow2(ofGetHeight());
+  ofFbo::Settings s;
+  s.width = y;
+  s.height = x;
+  s.useDepth = true;
+  s.depthStencilInternalFormat = GL_DEPTH_COMPONENT24;
+  s.depthStencilAsTexture = true;
 
   ofSetOrientation(OF_ORIENTATION_DEFAULT, true);
+  fbo.allocate(s);
   fft.setup(16384);
 }
 
@@ -190,7 +201,7 @@ void ofApp::update(){
 }
 
 void ofApp::draw(){
-  fbo.begin();
+  fbo.begin(false);
 
   if(showFreqGraph){
     ofBackground(0, 0, 0);
@@ -284,7 +295,12 @@ void ofApp::draw(){
   }
 
   fbo.end();
+
+  ofPushMatrix();
+  ofTranslate(0, ofGetHeight(), 0);
+  ofScale(1, -1, 1);
   fbo.draw(0,0,ofGetWidth(), ofGetHeight());
+  ofPopMatrix();
 }
 
 void ofApp::keyReleased(int key){
@@ -580,25 +596,30 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
 
     ofLogNotice("Text change.");
   }
+  if(addr == "/bloom"){
+    if (b != NULL){
+      float factor = msg.getArgAsFloat(0);
+      b->ping(factor);
+    }
+  }
   if(addr == "/fx"){
-
-    if(postFxMode){
-      postFxMode = false;
-      post.setFlip(false);
-      post.createPass<PixelatePass>()->setEnabled(false);
-      post.createPass<KaleidoscopePass>()->setEnabled(false);
-      post.createPass<RGBShiftPass>()->setEnabled(false);
-      post.createPass<BloomPass>()->setEnabled(false);
-    }
-    else{
-      post.reset();
-      postFxMode = true;
+    bool compositeFx = false;
+    if(msg.getNumArgs() > 1){
+      compositeFx = msg.getArgAsBool(1);
     }
 
-    if(postFxMode){
-      post.setFlip(true);
+    if(!compositeFx){
+      if(postFxMode){
+        postFxMode = false;
+      }
+      else{
+        post.reset();
+        postFxMode = true;
+      }
+    }
 
-      if(msg.getNumArgs() == 1){
+    if(postFxMode){
+      if(msg.getNumArgs() >= 1){
         string mode = msg.getArgAsString(0);
         if(mode == "rim"){
           post.createPass<RimHighlightingPass>()->setEnabled(true);
@@ -607,7 +628,8 @@ void ofApp::onMessageReceived(ofxOscMessage &msg){
           post.createPass<RimHighlightingPass>()->setEnabled(false);
         }
         if(mode == "bloom"){
-          post.createPass<BloomPass>()->setEnabled(true);
+          b = post.createPass<BloomPass>();
+          b->setEnabled(true);
         }
         else{
           post.createPass<BloomPass>()->setEnabled(false);

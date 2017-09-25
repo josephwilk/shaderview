@@ -18,6 +18,8 @@ class ofApp : public ofBaseApp{
   map<string, float> growthRate;
 
 
+  BloomPass::Ptr b;
+  int x,y;
   int vertexType;
   int vertexCount;
   ofx::IO::DirectoryWatcherManager watcher;
