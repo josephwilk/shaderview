@@ -39,7 +39,6 @@ class ofApp : public ofBaseApp{
   ofColor textColor;
   vector<string> textBuffer;
   vector<int> textBufferOpacity;
-  vector<int> textBufferSize;
 
   string defaultVert;
   string mainFrag;
