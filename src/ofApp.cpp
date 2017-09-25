@@ -243,27 +243,6 @@ void ofApp::draw(){
 
   shader.end();
   mTexture.unbind();
-  if(postFxMode){
-    post.end();
-  }
-
-  if (editorVisible) {
-    if(!isEditorInited){
-      editor.update();
-      isEditorInited = true;
-    }
-    editor.draw();
-  }
-
-  if (shaderErrored){
-    string errorMsg = "ERROR";
-    ofColor red(255, 0, 0);
-    ofColor black(0, 0, 0);
-    ofDrawBitmapStringHighlight(errorMsg, ofGetWidth() - 80, 0.0, red, black);
-  }
-
-  string msg = ofToString((int) ofGetFrameRate()) + " fps";
-  ofDrawBitmapString(msg, ofGetWidth()-80, 20, 0);
 
   vector<string>::iterator iter;
   vector<int>::iterator iterOp = textBufferOpacity.begin();;
@@ -282,6 +261,27 @@ void ofApp::draw(){
   }
 
   renderFont.drawString(textString, textStringWidth, textStringHeight);
+
+  //------------------POST FX---------------------
+  if(postFxMode){
+    post.end();
+  }
+  string msg = ofToString((int) ofGetFrameRate()) + " fps";
+  ofDrawBitmapString(msg, ofGetWidth()-80, 20, 0);
+  if (editorVisible) {
+    if(!isEditorInited){
+      editor.update();
+      isEditorInited = true;
+    }
+    editor.draw();
+  }
+
+  if (shaderErrored){
+    string errorMsg = "ERROR";
+    ofColor red(255, 0, 0);
+    ofColor black(0, 0, 0);
+    ofDrawBitmapStringHighlight(errorMsg, ofGetWidth() - 80, 0.0, red, black);
+  }
 
   fbo.end();
   fbo.draw(0,0,ofGetWidth(), ofGetHeight());
